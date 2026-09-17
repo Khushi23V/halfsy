@@ -4,14 +4,14 @@
    If you rename a file on disk, change it here and nowhere else.
    ============================================================ */
 
-/* ---- beat 1: scatter cards ---------------------------------
+/* ---- beats 1+2: scatter cards ---------------------------------
    `style` is the position. left/right and top are percentages of
    the viewport; width is px. NO height - the image sets it, which
    is what stops the letterboxing.
 
    `speed` is the drift multiplier. Higher = nearer the camera =
-   clears the screen sooner. scatter.js maps the range you use onto
-   70-92% of the beat, so only the relative order matters.
+   clears the screen sooner. hero.js maps the range you use onto
+   18-26% of the beat, so only the relative order matters.
 
    These are the positions I proposed, not the ones you have been
    nudging in your own index.html. Paste yours over the `style`
@@ -32,11 +32,11 @@ export const HERO_CARDS = [
    shop API - this is the shape they need to arrive in.
    ------------------------------------------------------------ */
 export const PRODUCTS = [
-  { src: '/images/products/product-01.jpg', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
-  { src: '/images/products/product-02.jpg', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
-  { src: '/images/products/product-03.jpg', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
-  { src: '/images/products/product-04.jpg', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
-  { src: '/images/products/product-05.jpg', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' }
+  { src: '/images/hero/hero-02.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
+  { src: '/images/hero/hero-04.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
+  { src: '/images/hero/hero-06.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
+  { src: '/images/hero/hero-07.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
+  { src: '/images/hero/hero-03.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' }
 ];
 
 /* ---- beat 6: brand marks -----------------------------------
@@ -73,7 +73,54 @@ export const FOOTER_IMAGE = '/images/footer.png';
    Kept here so the character spans can be generated from the
    source text rather than by rewriting the DOM afterwards.
    ------------------------------------------------------------ */
-export const CIRCLE_HEADING = ['The piece was always the same.', 'Only the price moved.'];
-export const CIRCLE_BODY =
-  'We watch the retailers worth watching and collect what has come down in price. ' +
-  'Every listing takes you straight to the original store.';
+export const CIRCLE_COPY =
+  'The piece was always the same. Only the price moved. ' +
+  'We watch the retailers worth watching and collect what has come down ' +
+  'in price, and every listing takes you straight to the original store.';
+
+export const MARQUEE = [
+  { text: 'SHIRTS,',                      style: 'serif' },
+  { text: 'DRESSES,',                     style: 'serif' },
+  { text: 'JACKETS,',                     style: 'serif' },
+  { text: 'everything at the best price', style: 'sans'  }
+];
+
+/* Append to the end of src/data/assets.js */
+
+/* ---- beat 7: overnight drops --------------------------------
+   Timestamps are the point. A price that moved at 02:41 is a price
+   nobody announced - which is the whole proposition, said without
+   claiming it. Real data replaces this from the same shape.
+   ------------------------------------------------------------ */
+/* Replace the existing DROPS array in src/data/assets.js with this -
+   it now carries an image per pick. */
+
+export const DROPS = [
+  { src: '/images/products/product-01.jpg', time: '02:41',
+    brand: 'Alexander McQueen', piece: 'Draped crepe gown',
+    was: '$3,900', now: '$1,560' },
+  { src: '/images/products/product-02.jpg', time: '04:08',
+    brand: 'Jacquemus', piece: 'Linen tailored jacket',
+    was: '$1,190', now: '$595' },
+  { src: '/images/products/product-03.jpg', time: '05:52',
+    brand: 'Roberto Cavalli', piece: 'Printed silk midi',
+    was: '$2,450', now: '$980' },
+  { src: '/images/products/product-04.jpg', time: '07:19',
+    brand: 'Jimmy Choo', piece: 'Chain-strap leather mule',
+    was: '$1,050', now: '$472' }
+];
+/* ---- beat 8: one piece, watched ------------------------------
+   Five readings, not a live feed. The line only has to show that the
+   piece stayed still while the number fell.
+   ------------------------------------------------------------ */
+export const PRICE_HISTORY = {
+  brand: 'Roberto Cavalli',
+  piece: 'Metallic paisley tiered gown',
+  points: [
+    { label: 'March',     value: 3250 },
+    { label: 'May',       value: 3250 },
+    { label: 'July',      value: 2600 },
+    { label: 'September', value: 1950 },
+    { label: 'Today',     value: 1300 }
+  ]
+};

@@ -16,12 +16,16 @@ export function initBrands() {
 
   const tl = pinned(section);
 
+  /* 18 marks now, not 10. The stagger is spread across a fixed
+     fraction of the beat rather than a fixed step per logo, so adding
+     or removing rows changes the density, never the timing. */
+  const spread = 0.34;
   logos.forEach((logo, i) => {
     const drift = (i % 3 - 1) * 26;
     tl.fromTo(logo,
       { opacity: 0, y: 40 + drift, scale: 0.94 },
       { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.22 },
-      0.02 * i
+      logos.length > 1 ? spread * (i / (logos.length - 1)) : 0
     );
   });
 

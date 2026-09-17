@@ -2,63 +2,37 @@
    beats.css — one block per scroll beat, in page order
    ============================================================ */
 
-/* ---------- 1. scatter ---------------------------------------- */
-.scatter { height: calc(var(--beat-scatter) * 1vh); }
+/* ---------- 1 + 2. hero: scatter, then the circle -------------
+   One section. It was two, overlapping by a viewport, which is why
+   the circle needed a twin, why 26% had to match across two files,
+   and why the copy below showed over the hero before its own beat.
+   ------------------------------------------------------------ */
+.hero { height: calc(var(--beat-hero) * 1vh); }
 
-.scatter__card {
+.hero__card {
   position: absolute;
   border: 1px solid var(--maroon-07);
   background: var(--white);
   will-change: transform;
   overflow: hidden;
+  z-index: 2;
 }
+.hero__card img { display: block; width: 100%; height: auto; }
 
-/* Lift on hover. `scale`, not `transform: scale()` — GSAP writes
-   transform on these every frame during the scroll and would wipe it.
-   z-index keeps the hovered card above its neighbours but below
-   .scatter__type at 5, so it never rides over the headline. */
+/* Lift on hover. GSAP owns `transform` on these and writes
+   `scale: none` inline, so the scale goes through GSAP in hero.js -
+   only the shadow is CSS. */
 @media (hover: hover) {
-  .scatter__card {
-    scale: 1;
-    transition: scale 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  .hero__card {
+    transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .scatter__card:hover {
-    scale: 1.04;
+  .hero__card:hover {
     z-index: 4;
     box-shadow: 0 18px 40px -24px rgba(90, 26, 36, 0.35);
   }
 }
 
-.scatter__card img {
-  display: block;
-  width: 100%;
-  height: auto;      /* was: height: 100%; object-fit: contain */
-}
-
-/* placeholder look until real images land */
-.scatter__card:empty::after,
-.scatter__card img[src=''] {
-  content: '';
-  display: block;
-  width: 100%; height: 100%;
-  background: linear-gradient(150deg, #DCD3CE, #C9BDB6);
-}
-
-/* Twin of .circle__fill. Beat 2 is a separate pinned section and
-   cannot paint while beat 1 is still pinned, so the circle begins its
-   rise here and the real one continues from the same radius. Sits
-   below the cards and the headline, so the type fades out over it. */
-.scatter__circle {
-  position: absolute;
-  inset: 0;
-  background: var(--maroon);
-  clip-path: circle(0% at 50% 130%);
-  will-change: clip-path;
-  pointer-events: none;
-}
-
-.scatter__type {
+.hero__type {
   position: absolute;
   left: 0; right: 0;
   top: 50%;
@@ -68,8 +42,7 @@
   padding: 0 var(--gutter);
   will-change: transform, opacity;
 }
-
-.scatter__display {
+.hero__display {
   margin: 0;
   font-family: var(--font-sans);
   font-weight: 300;
@@ -78,100 +51,75 @@
   letter-spacing: var(--ls-display);
   color: var(--maroon);
 }
-.scatter__display .script {
-  /* Miama runs small for its point size — the designer's own note.
-     This nudges it back onto the baseline of the Urbanist around it. */
+.hero__display .script {
+  /* Miama runs small for its point size - the designer's own note. */
   position: relative;
   top: 0.06em;
   margin: 0 0.04em;
 }
 
-.scatter__cta {
-  display: inline-block;
-  margin-top: 52px;
-  padding: 14px 34px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bone);
-  background: var(--maroon);
-  border-radius: 999px;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-.scatter__cta:hover { background: #4a1420; }
-
-.scatter__hint {
+.hero__hint {
   position: absolute;
   bottom: 36px; left: 50%;
   transform: translateX(-50%);
+  z-index: 5;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--maroon-38);
 }
 
-/* ---------- 2. circle ----------------------------------------- */
-.circle { height: calc(var(--beat-circle) * 1vh); }
-
-.circle__fill {
+/* animated on the radius, not on transform - keeps the edge crisp
+   and does not blur the text riding inside it */
+.hero__fill {
   position: absolute;
   inset: 0;
+  z-index: 6;
   background: var(--maroon);
-  /* animated on the radius, not on transform — keeps edges crisp.
-     JS starts this at 26%, where .scatter__circle handed it over. */
   clip-path: circle(0% at 50% 130%);
   will-change: clip-path;
-}
-
-/* Typed one at a time by circle.js. `inline`, never inline-block:
-   inline-block makes every glyph its own box and words break
-   mid-word when the line wraps. Only opacity is animated. */
-.circle__char { display: inline; opacity: 0; will-change: opacity; }
-
-/* Twin of .story__media — identical box, so the handoff at the
-   section seam is invisible. inset(50% 50%) is zero area: closed. */
-/* Twin of .story__media. Sits off the bottom of the stage and slides
-   up to centre, then beat 3 expands it. inset: 0 rather than
-   left/top 50% + translate — GSAP owns transform here. */
-.circle__media {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  clip-path: inset(38% 42% round 2px);
-  will-change: transform;
   pointer-events: none;
-    z-index: 6;
 }
-.circle__media img { width: 100%; height: 100%; object-fit: cover; }
-.circle__copy {
+
+.hero__copy {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  width: min(720px, 82vw);
+  z-index: 7;
+  width: min(880px, 84vw);
   text-align: center;
-  color: var(--bone);
-  opacity: 0;
-  will-change: opacity, transform;
+  will-change: opacity;
 }
-.circle__copy p {
+.hero__copy p {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--fs-lead);
-  line-height: var(--lh-body);
-  color: var(--bone-70);
-}
-.circle__copy h2 {
-  margin: 0 0 28px;
-  font-family: var(--font-serif);
   font-weight: 400;
-  font-size: var(--fs-h2);
-  line-height: var(--lh-snug);
+  /* one held size - not a heading and a sub */
+  font-size: clamp(24px, 2.6vw, 38px);
+  line-height: 1.5;
   color: var(--bone);
 }
+
+/* Hidden in CSS, never in JS. If a refresh or a revert ever re-runs
+   the reveal out of order, the characters stay hidden rather than
+   stranded visible over the hero. `inline`, never inline-block:
+   inline-block makes every glyph its own box and words break
+   mid-word when the line wraps. */
+.hero__char { display: inline; opacity: 0; will-change: opacity; }
+
+/* rises from below the fold, parks over the copy, opens to full
+   bleed - and beat 3 starts full bleed, so that seam is two
+   identical images */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: hidden;
+  clip-path: inset(38% 42% round 2px);
+  will-change: transform, clip-path;
+  pointer-events: none;
+}
+.hero__media img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------- 3 + 4. image grows, marquee runs, SHOP ------------ */
 .story { height: calc(var(--beat-image) * 1vh); }
@@ -186,8 +134,7 @@
   height: 100svh;
   overflow: hidden;
   /* starts as a small window, scrubs open to full bleed */
-    clip-path: inset(50% 50% round 2px);
-  will-change: clip-path;
+
 }
 .story__media img {
   width: 100%; height: 100%;
@@ -201,37 +148,56 @@
   position: absolute;
   left: 0; right: 0;
   top: 62%;
+  /* baseline-align the two type sizes and the button */
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: 40px;
   white-space: nowrap;
   color: var(--bone);
   will-change: transform;
 }
-.story__marquee-text {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: var(--fs-h3);
-  letter-spacing: -0.01em;
-}
-.story__marquee-text em {
-  font-style: normal;
+.story__word { will-change: opacity; }
+
+/* uppercase Cormorant for the categories - the loud half */
+.story__word--serif {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(42px, 5.4vw, 78px);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
-.story__rule {
-  flex: 0 0 76px;
+/* Urbanist for the line that follows, deliberately much smaller */
+.story__word--sans {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(20px, 2.1vw, 30px);
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* the rule between price and SHOP, drawn rather than typed so the
+   arrowhead sits on the same optical line as the stroke */
+.story__arrow {
+  flex: 0 0 auto;
+  position: relative;
+  width: 74px;
   height: 1px;
   background: var(--bone);
+  will-change: opacity;
+}
+.story__arrow::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  width: 9px; height: 9px;
+  border-top: 1px solid var(--bone);
+  border-right: 1px solid var(--bone);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .story__shop {
-  position: absolute;
-  left: 50%;
-  top: 78%;
-  transform: translateX(-50%) translateY(20px);
-  opacity: 0;
-  will-change: opacity, transform;
+  flex: 0 0 auto;
+  will-change: opacity;
 }
 
 /* ---------- 5. products roll up -------------------------------- */
@@ -239,7 +205,7 @@
   position: relative;
   z-index: 2;
   background: var(--bone);
-  padding: 140px var(--gutter) 160px;
+  padding: 120px var(--gutter) 110px;
   border-radius: 40px 40px 0 0;
   margin-top: -40px;
   will-change: transform;
@@ -290,24 +256,40 @@
 .brands__field {
   position: absolute;
   inset: 0;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  align-content: center;
-  gap: 60px 40px;
-  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 4.5vh, 68px);
+  /* no gutter - the rows are meant to run off both edges */
+  padding: 0;
 }
+
+/* Rows wider than the viewport, so the field is a fragment of
+   something larger rather than a grid that happens to fit. The 4s
+   overhang further than the 3s, which is what breaks the column
+   rhythm and stops it reading as a table. */
+.brands__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brands__row--4 { width: 126%; margin-left: -13%; }
+.brands__row--3 { width: 106%; margin-left:  -3%; }
+
 .brands__logo {
+  flex: 1;
   display: grid;
   place-items: center;
   opacity: 0;
   will-change: transform, opacity;
 }
 .brands__logo img {
-  max-height: 58px;
+  max-height: clamp(80px, 7.5vh, 114px);
+  max-width: 100%;
   width: auto;
   object-fit: contain;
-  /* brand marks are all different weights — flatten them to one tone */
-  filter: grayscale(1) opacity(0.55);
+  /* brand marks are all different weights - flatten them to one tone */
+  filter: grayscale(1) opacity(1);
 }
 
 /* Two stacked layers cross-fading. Animating backdrop-filter directly
@@ -317,7 +299,7 @@
   inset: 0;
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
-  background: rgba(239, 233, 230, 0.55);
+  background: rgba(239, 233, 230, 0.42);
   opacity: 0;
   will-change: opacity;
   pointer-events: none;
@@ -325,25 +307,248 @@
 
 .brands__reveal {
   position: absolute;
+  z-index: 2;
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
   opacity: 0;
   will-change: opacity, transform;
 }
+.brands__reveal { color: var(--black); }
 .brands__reveal h2 {
   margin: 0 0 14px;
+  color: var(--black);
   font-family: var(--font-serif);
   font-weight: 400;
-  font-size: var(--fs-h2);
+  font-size: clamp(28px, 3.2vw, 30px);
   line-height: var(--lh-snug);
 }
 .brands__reveal p {
   margin: 0 0 32px;
   font-family: var(--font-body);
-  font-size: var(--fs-lead);
-  color: var(--maroon-55);
+  font-size: clamp(20px, 3.2vw, 15px);
+  color: rgba(0, 0, 0, 0.82);
 }
+/* the one place the black token is used - the Figma file had it on
+   this button only */
+.brands__reveal .btn { background: var(--black); color: var(--bone); }
+.brands__reveal .btn:hover { background: #1c1c1c; }
+
+/* Paste this into src/styles/beats.css, directly above the
+   "7. footer reveals from behind" block (and renumber that one to 9).
+   The reduced-motion and mobile additions are at the bottom - those go
+   INSIDE the existing @media blocks, not after them. */
+
+/* Replace your whole '7. overnight drops' block in beats.css with this.
+   Also: in the reduced-motion block change `.drop { opacity: 1; --rule: 100%; }`
+   to `.pick { opacity: 1; }`, and in the 860px block replace the three
+   `.drop` lines with `.drops__row { grid-template-columns: repeat(2, 1fr); }` */
+
+/* ---------- 7. overnight drops --------------------------------
+   Maroon, after two bone beats. The page has been light since the
+   products rolled up, and this is the point where it should feel
+   like evening again before the footer.
+   ------------------------------------------------------------ */
+.drops {
+  background: var(--maroon);
+  color: var(--bone);
+  padding: 160px var(--gutter) 150px;
+  position: relative;
+  z-index: 2;
+}
+
+.drops__head { max-width: 900px; margin: 0 0 90px; }
+.drops__eyebrow {
+  margin: 0 0 26px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bone-45);
+}
+.drops__head h2 {
+  margin: 0 0 20px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(34px, 4.2vw, 62px);
+  line-height: 1.16;
+  color: var(--bone);
+}
+.drops__note {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  color: var(--bone-45);
+}
+
+/* Four polaroids at slightly wrong angles. The row is a grid so the
+   cards stay on a shared baseline; the tilt is transform only, which
+   costs no layout and cannot push its neighbours around. */
+.drops__row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 2.6vw, 44px);
+  align-items: start;
+}
+
+/* Every other card hangs lower, so the row reads as pinned up rather
+   than laid out. */
+.pick {
+  margin: 0;
+  background: var(--white);
+  padding: 14px 14px 0;
+  box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.55);
+  will-change: transform, opacity;
+  opacity: 0;
+}
+.pick:nth-child(even) { margin-top: clamp(24px, 4vw, 62px); }
+
+.pick__frame {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #EDE8E5;
+}
+.pick__frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* the deep lower border is what makes it a polaroid rather than a
+   card - the caption lives in the frame, not under it */
+.pick__meta {
+  padding: 20px 4px 30px;
+  color: var(--maroon);
+  text-align: left;
+}
+
+.pick__time {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--maroon-38);
+  font-variant-numeric: tabular-nums;
+}
+.pick__brand {
+  margin: 0 0 4px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.pick__piece {
+  margin: 0 0 14px;
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.4vw, 22px);
+  line-height: 1.25;
+}
+.pick__price { display: flex; align-items: baseline; gap: 12px; margin: 0; }
+.pick__was {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--maroon-38);
+  text-decoration: line-through;
+}
+.pick__now {
+  font-family: var(--font-sans);
+  font-size: clamp(17px, 1.4vw, 21px);
+  font-variant-numeric: tabular-nums;
+}
+
+
+
+/* ---------- 8. one piece, watched -----------------------------
+   The only chart in the page, so it gets no axes, no grid and no
+   library - a drawn line and five readings.
+   ------------------------------------------------------------ */
+.history {
+  background: var(--bone);
+  padding: 170px var(--gutter) 180px;
+  position: relative;
+  z-index: 2;
+}
+
+.history__head { text-align: center; margin: 0 0 80px; }
+.history__head h2 {
+  margin: 0 0 18px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 58px);
+  line-height: 1.18;
+  color: var(--maroon);
+}
+.history__head p {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--maroon-38);
+}
+
+.history__chart {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.history__chart svg { width: 100%; height: auto; overflow: visible; }
+
+.history__line {
+  stroke: var(--maroon);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.history__dot { fill: var(--maroon); opacity: 0; }
+
+.history__labels { position: relative; height: 34px; }
+.history__label {
+  position: absolute;
+  top: 10px;
+  transform: translateX(-50%);
+  opacity: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--maroon-38);
+  white-space: nowrap;
+}
+
+.history__caption {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 34px;
+  margin: 58px 0 0;
+}
+.history__from {
+  font-family: var(--font-sans);
+  font-size: var(--fs-ui);
+  letter-spacing: 0.06em;
+  color: var(--maroon-38);
+  text-decoration: line-through;
+}
+.history__to {
+  font-family: var(--font-body);
+  font-size: clamp(26px, 2.6vw, 40px);
+  color: var(--maroon);
+}
+
+
+/* ---- add inside @media (prefers-reduced-motion: reduce) ---- */
+/*
+  .drop { opacity: 1; --rule: 100%; }
+  .history__dot, .history__label { opacity: 1; }
+  .history__line { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+*/
+
+/* ---- add inside @media (max-width: 860px) ---- */
+/*
+  .drop { grid-template-columns: 72px 1fr; gap: 10px 20px; }
+  .drop__piece  { grid-column: 2; }
+  .drop__price  { grid-column: 2; }
+  .history__label:not(:first-child):not(:last-child) { display: none; }
+*/
 
 /* ---------- 7. footer reveals from behind ---------------------- */
 /* Everything above the footer scrolls up off it. The footer never
@@ -374,7 +579,7 @@
 .footer__spacer { height: min(calc(100vw * 626 / 1441), 100svh); }
 
 
-.footer__top { display: flex; justify-content: space-between; gap: 40px; }
+
 .footer__cols { display: flex; gap: 72px; font-size: var(--fs-ui); }
 .footer__col h3 {
   margin: 0 0 16px;
@@ -384,9 +589,20 @@
   color: var(--bone-45);
   font-weight: 400;
 }
+/* the artwork owns the top; everything else sits at the foot */
+.footer { align-content: end; }
+
+.footer__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 60px;
+  padding-bottom: 52px;
+}
+.footer__cols { display: flex; gap: 72px; font-size: var(--fs-ui); }
+.footer__col--social { font-size: var(--fs-ui); }
 .footer__col a { display: block; padding: 5px 0; color: var(--bone-70); }
 .footer__col a:hover { color: var(--bone); }
-
 
 
 .footer__legal {
@@ -402,8 +618,7 @@
    to a readable static state stacked vertically.
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
-  .scatter { height: auto; }
-  .circle  { height: auto; }
+  .hero { height: auto; }
   .story   { height: auto; }
   .brands  { height: auto; }
 
@@ -413,23 +628,25 @@
     overflow: hidden;
   }
 
-  .scatter__card { position: relative; display: none; }
-  .scatter__circle { display: none; }
-  .scatter__type { position: relative; transform: none; padding: 180px var(--gutter) 120px; }
+  .hero__card { display: none; }
+  .hero__type { position: relative; transform: none; padding: 180px var(--gutter) 120px; }
 
-  .circle__fill  { clip-path: none; position: relative; min-height: 60vh; }
-  .circle__char  { opacity: 1 !important; }
-  .circle__copy  { opacity: 1; position: relative; transform: none;
-                   padding: 90px 0; margin: 0 auto; }
+  .hero__fill    { clip-path: none; position: relative; min-height: 60vh; }
+  .hero__char    { opacity: 1 !important; }
+  .hero__copy    { position: relative; transform: none; z-index: auto;
+                   opacity: 1; padding: 90px 0; margin: 0 auto; }
+  .hero__media   { clip-path: none; position: relative; height: 70svh; }
 
-  .story__media  { clip-path: none; position: relative; transform: none;
+  .story__media  { position: relative; transform: none;
                    left: auto; top: auto; height: 70svh; }
+  .story__word { opacity: 1 !important; }
   .story__marquee { position: relative; top: auto; transform: none;
                     overflow-x: auto; padding: 40px var(--gutter); }
   .story__shop   { opacity: 1; position: relative; transform: none;
                    top: auto; margin: 0 auto 80px; display: table; }
 
   .brands__field { position: relative; padding: 100px var(--gutter) 40px; }
+  .brands__row   { width: 100%; margin-left: 0; }
   .brands__logo  { opacity: 1; }
   .brands__veil  { display: none; }
   .brands__reveal { opacity: 1; position: relative; transform: none;
@@ -445,7 +662,8 @@
    ------------------------------------------------------------ */
 @media (max-width: 860px) {
   .products__row  { grid-template-columns: repeat(2, 1fr); gap: 18px; }
-  .brands__field  { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+  .brands__row--4 { width: 150%; margin-left: -25%; }
+  .brands__row--3 { width: 122%; margin-left: -11%; }
   .footer__top    { flex-direction: column; }
   .nav__links a:not(.nav__cta) { display: none; }
 }

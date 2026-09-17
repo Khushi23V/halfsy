@@ -49,8 +49,7 @@ export function destroyScroll() {
    name matches the section id. Keeping the map here means the beat
    files never pass their own budget and cannot fall out of sync. */
 const BUDGETS = {
-  'beat-scatter': '--beat-scatter',
-  'beat-circle':  '--beat-circle',
+  'beat-hero':    '--beat-hero',
   'beat-story':   '--beat-image',
   'beat-brands':  '--beat-brands'
 };

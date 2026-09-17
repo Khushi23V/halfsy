@@ -5,7 +5,14 @@
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer__top">
+      <div className="footer__body">
+        <div className="footer__col footer__col--social">
+          <h3>Follow</h3>
+          <a href="#">Instagram</a>
+          <a href="#">TikTok</a>
+          <a href="#">Pinterest</a>
+        </div>
+
         <div className="footer__cols">
           <div className="footer__col">
             <h3>Shop</h3>

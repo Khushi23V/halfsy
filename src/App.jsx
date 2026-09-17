@@ -1,20 +1,23 @@
 import { useLayoutEffect, useRef } from 'react';
 import { gsap, ScrollTrigger, initScroll, destroyScroll } from './lib/scroll.js';
 
-import { initScatter }  from './beats/scatter.js';
-import { initCircle }   from './beats/circle.js';
+import { initHero }     from './beats/hero.js';
 import { initStory }    from './beats/story.js';
 import { initProducts } from './beats/products.js';
 import { initBrands }   from './beats/brands.js';
 import { initFooter }   from './beats/footer.js';
 
 import Nav      from './components/Nav.jsx';
-import Scatter  from './components/Scatter.jsx';
-import Circle   from './components/Circle.jsx';
+import Hero     from './components/Hero.jsx';
 import Story    from './components/Story.jsx';
 import Products from './components/Products.jsx';
 import Brands   from './components/Brands.jsx';
 import Footer   from './components/Footer.jsx';
+
+import { initDrops }    from './beats/drops.js';
+
+import Drops    from './components/Drops.jsx';
+
 
 export default function App() {
   const root = useRef(null);
@@ -35,8 +38,7 @@ export default function App() {
        height it should be. */
     const ctx = gsap.context(() => {
       const cleanups = [
-        initScatter(),
-        initCircle(),
+        initHero(),
         initStory(),
         initProducts(),
         initBrands(),
@@ -78,11 +80,13 @@ export default function App() {
       <Nav />
 
       <main className="main">
-        <Scatter />
-        <Circle />
+        <Hero />
         <Story />
         <Products />
         <Brands />
+                <Brands />
+        <Drops />
+
       </main>
 
       {/* sibling of main, not a child - see Footer.jsx */}

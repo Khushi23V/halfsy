@@ -58,7 +58,7 @@
   --page:        1440px;
   --gutter:      clamp(20px, 4.4vw, 84px);
   --grid-cell:   84px;        /* the faint hero grid */
-  --radius-pill: 100px;
+  --radius-pill: 0;
   --radius-card: 2px;
 
   /* ---- motion -------------------------------------------------
@@ -68,10 +68,9 @@
      section id, so changing a number here really does change the
      scroll distance.
      ------------------------------------------------------------ */
-  --beat-scatter:  180;   /* 1  cards drift                        */
-  --beat-circle:   250;   /* 2  circle fills screen, copy types in */
-  --beat-image:    400;   /* 3+4 image grows, marquee runs, SHOP   */
-  --beat-brands:   300;   /* 6  logos float, blur reveal           */
+  --beat-hero:     320;   /* 1+2 cards drift, circle fills, copy types */
+  --beat-image:    320;   /* 3+4 image grows, marquee runs, SHOP   */
+  --beat-brands:   190;   /* 6  logos float, blur reveal           */
 
   --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast:    0.25s;
