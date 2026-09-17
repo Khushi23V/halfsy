@@ -1,0 +1,451 @@
+/* ============================================================
+   beats.css — one block per scroll beat, in page order
+   ============================================================ */
+
+/* ---------- 1. scatter ---------------------------------------- */
+.scatter { height: calc(var(--beat-scatter) * 1vh); }
+
+.scatter__card {
+  position: absolute;
+  border: 1px solid var(--maroon-07);
+  background: var(--white);
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* Lift on hover. `scale`, not `transform: scale()` — GSAP writes
+   transform on these every frame during the scroll and would wipe it.
+   z-index keeps the hovered card above its neighbours but below
+   .scatter__type at 5, so it never rides over the headline. */
+@media (hover: hover) {
+  .scatter__card {
+    scale: 1;
+    transition: scale 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scatter__card:hover {
+    scale: 1.04;
+    z-index: 4;
+    box-shadow: 0 18px 40px -24px rgba(90, 26, 36, 0.35);
+  }
+}
+
+.scatter__card img {
+  display: block;
+  width: 100%;
+  height: auto;      /* was: height: 100%; object-fit: contain */
+}
+
+/* placeholder look until real images land */
+.scatter__card:empty::after,
+.scatter__card img[src=''] {
+  content: '';
+  display: block;
+  width: 100%; height: 100%;
+  background: linear-gradient(150deg, #DCD3CE, #C9BDB6);
+}
+
+/* Twin of .circle__fill. Beat 2 is a separate pinned section and
+   cannot paint while beat 1 is still pinned, so the circle begins its
+   rise here and the real one continues from the same radius. Sits
+   below the cards and the headline, so the type fades out over it. */
+.scatter__circle {
+  position: absolute;
+  inset: 0;
+  background: var(--maroon);
+  clip-path: circle(0% at 50% 130%);
+  will-change: clip-path;
+  pointer-events: none;
+}
+
+.scatter__type {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  text-align: center;
+  padding: 0 var(--gutter);
+  will-change: transform, opacity;
+}
+
+.scatter__display {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+  color: var(--maroon);
+}
+.scatter__display .script {
+  /* Miama runs small for its point size — the designer's own note.
+     This nudges it back onto the baseline of the Urbanist around it. */
+  position: relative;
+  top: 0.06em;
+  margin: 0 0.04em;
+}
+
+.scatter__cta {
+  display: inline-block;
+  margin-top: 52px;
+  padding: 14px 34px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--maroon);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+.scatter__cta:hover { background: #4a1420; }
+
+.scatter__hint {
+  position: absolute;
+  bottom: 36px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--maroon-38);
+}
+
+/* ---------- 2. circle ----------------------------------------- */
+.circle { height: calc(var(--beat-circle) * 1vh); }
+
+.circle__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--maroon);
+  /* animated on the radius, not on transform — keeps edges crisp.
+     JS starts this at 26%, where .scatter__circle handed it over. */
+  clip-path: circle(0% at 50% 130%);
+  will-change: clip-path;
+}
+
+/* Typed one at a time by circle.js. `inline`, never inline-block:
+   inline-block makes every glyph its own box and words break
+   mid-word when the line wraps. Only opacity is animated. */
+.circle__char { display: inline; opacity: 0; will-change: opacity; }
+
+/* Twin of .story__media — identical box, so the handoff at the
+   section seam is invisible. inset(50% 50%) is zero area: closed. */
+/* Twin of .story__media. Sits off the bottom of the stage and slides
+   up to centre, then beat 3 expands it. inset: 0 rather than
+   left/top 50% + translate — GSAP owns transform here. */
+.circle__media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: inset(38% 42% round 2px);
+  will-change: transform;
+  pointer-events: none;
+    z-index: 6;
+}
+.circle__media img { width: 100%; height: 100%; object-fit: cover; }
+.circle__copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(720px, 82vw);
+  text-align: center;
+  color: var(--bone);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.circle__copy p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-body);
+  color: var(--bone-70);
+}
+.circle__copy h2 {
+  margin: 0 0 28px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  color: var(--bone);
+}
+
+/* ---------- 3 + 4. image grows, marquee runs, SHOP ------------ */
+.story { height: calc(var(--beat-image) * 1vh); }
+
+.story__stage { background: var(--maroon); }
+
+.story__media {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+  /* starts as a small window, scrubs open to full bleed */
+    clip-path: inset(50% 50% round 2px);
+  will-change: clip-path;
+}
+.story__media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.story__media--empty {
+  background: linear-gradient(120deg, #6B3A21, #2B1913 60%, #7A4A27);
+}
+
+.story__marquee {
+  position: absolute;
+  left: 0; right: 0;
+  top: 62%;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  white-space: nowrap;
+  color: var(--bone);
+  will-change: transform;
+}
+.story__marquee-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--fs-h3);
+  letter-spacing: -0.01em;
+}
+.story__marquee-text em {
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.story__rule {
+  flex: 0 0 76px;
+  height: 1px;
+  background: var(--bone);
+}
+
+.story__shop {
+  position: absolute;
+  left: 50%;
+  top: 78%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* ---------- 5. products roll up -------------------------------- */
+.products {
+  position: relative;
+  z-index: 2;
+  background: var(--bone);
+  padding: 140px var(--gutter) 160px;
+  border-radius: 40px 40px 0 0;
+  margin-top: -40px;
+  will-change: transform;
+}
+
+.products__head {
+  margin: 0 0 64px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-h4);
+  letter-spacing: -0.01em;
+}
+.products__head .script { font-size: 1.05em; }
+
+.products__row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+.product { will-change: transform, opacity; }
+
+.product__media {
+  aspect-ratio: 264 / 387;
+  background: var(--white);
+  border: 1px solid var(--maroon-07);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.product__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.product__name {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 0 6px;
+}
+
+/* the discount is the value prop — make it the loud thing */
+.product__price { display: flex; align-items: baseline; gap: 10px; }
+.product__now  { font-size: 21px; font-weight: 500; }
+.product__was  { font-size: 14px; color: var(--maroon-38); text-decoration: line-through; }
+
+/* ---------- 6. brands float, blur reveals ---------------------- */
+.brands { height: auto; }
+.brands__stage { background: var(--bone); }
+
+.brands__field {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-content: center;
+  gap: 60px 40px;
+  padding: 0 var(--gutter);
+}
+.brands__logo {
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.brands__logo img {
+  max-height: 58px;
+  width: auto;
+  object-fit: contain;
+  /* brand marks are all different weights — flatten them to one tone */
+  filter: grayscale(1) opacity(0.55);
+}
+
+/* Two stacked layers cross-fading. Animating backdrop-filter directly
+   janks badly on Safari and integrated GPUs; opacity is free. */
+.brands__veil {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  background: rgba(239, 233, 230, 0.55);
+  opacity: 0;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.brands__reveal {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.brands__reveal h2 {
+  margin: 0 0 14px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+}
+.brands__reveal p {
+  margin: 0 0 32px;
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  color: var(--maroon-55);
+}
+
+/* ---------- 7. footer reveals from behind ---------------------- */
+/* Everything above the footer scrolls up off it. The footer never
+   moves — it is simply uncovered. Cheapest beat in the file. */
+.main { position: relative; z-index: 2; background: var(--bone); }
+
+.footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 1;
+  color: var(--bone);
+  display: grid;
+  align-content: space-between;
+  padding: 140px var(--gutter) 0;
+  overflow: hidden;
+
+  /* The artwork carries the wordmark edge to edge, so its width is
+     never allowed to crop. Height follows the 1441x626 ratio instead,
+     which also grows the empty lower area the legal line sits in. */
+  height: calc(100vw * 626 / 1441);
+
+  background-color: var(--maroon);
+  background-image: url('/images/footer.png');
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+.footer__spacer { height: min(calc(100vw * 626 / 1441), 100svh); }
+
+
+.footer__top { display: flex; justify-content: space-between; gap: 40px; }
+.footer__cols { display: flex; gap: 72px; font-size: var(--fs-ui); }
+.footer__col h3 {
+  margin: 0 0 16px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-45);
+  font-weight: 400;
+}
+.footer__col a { display: block; padding: 5px 0; color: var(--bone-70); }
+.footer__col a:hover { color: var(--bone); }
+
+
+
+.footer__legal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--bone-45);
+  padding-bottom: 24px;
+}
+
+/* ---------- reduced motion -----------------------------------
+   Not a fallback — a second layout. Every pinned beat resolves
+   to a readable static state stacked vertically.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .scatter { height: auto; }
+  .circle  { height: auto; }
+  .story   { height: auto; }
+  .brands  { height: auto; }
+
+  .stage {
+    position: relative;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .scatter__card { position: relative; display: none; }
+  .scatter__circle { display: none; }
+  .scatter__type { position: relative; transform: none; padding: 180px var(--gutter) 120px; }
+
+  .circle__fill  { clip-path: none; position: relative; min-height: 60vh; }
+  .circle__char  { opacity: 1 !important; }
+  .circle__copy  { opacity: 1; position: relative; transform: none;
+                   padding: 90px 0; margin: 0 auto; }
+
+  .story__media  { clip-path: none; position: relative; transform: none;
+                   left: auto; top: auto; height: 70svh; }
+  .story__marquee { position: relative; top: auto; transform: none;
+                    overflow-x: auto; padding: 40px var(--gutter); }
+  .story__shop   { opacity: 1; position: relative; transform: none;
+                   top: auto; margin: 0 auto 80px; display: table; }
+
+  .brands__field { position: relative; padding: 100px var(--gutter) 40px; }
+  .brands__logo  { opacity: 1; }
+  .brands__veil  { display: none; }
+  .brands__reveal { opacity: 1; position: relative; transform: none;
+                    padding: 0 0 120px; }
+
+  .footer { position: relative; height: auto; }
+  .footer__spacer { display: none; }
+}
+
+/* ---------- mobile -------------------------------------------
+   Same principle: the scatter cannot survive 375px, so it
+   collapses. Tune this properly once the desktop beats land.
+   ------------------------------------------------------------ */
+@media (max-width: 860px) {
+  .products__row  { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .brands__field  { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+  .footer__top    { flex-direction: column; }
+  .nav__links a:not(.nav__cta) { display: none; }
+}

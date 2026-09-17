@@ -1,0 +1,88 @@
+/* ============================================================
+   tokens.css — every value scanned out of the Figma file.
+   Change a value here, it changes everywhere.
+   ============================================================ */
+
+:root {
+  /* ---- colour ------------------------------------------------
+     Five colours were in use in the Figma file. #561823 appeared
+     once and is a near-duplicate of the maroon, so it is folded
+     into --maroon rather than kept as a sixth token.
+     ------------------------------------------------------------ */
+  --maroon:        #5A1A24;
+  --bone:          #EFE9E6;
+  --white:         #FFFFFF;
+  --black:         #000000;   /* only the EXPLORE BRANDS button uses this */
+
+  /* derived — opacity steps of the maroon, for rules and secondary text */
+  --maroon-90:     rgba(90, 26, 36, 0.90);
+  --maroon-55:     rgba(90, 26, 36, 0.55);
+  --maroon-38:     rgba(90, 26, 36, 0.38);
+  --maroon-12:     rgba(90, 26, 36, 0.12);
+  --maroon-07:     rgba(90, 26, 36, 0.07);
+  --grid-line:     rgba(90, 26, 36, 0.055);
+
+  /* on-maroon text */
+  --bone-70:       rgba(239, 233, 230, 0.70);
+  --bone-45:       rgba(239, 233, 230, 0.45);
+
+  /* ---- type families ----------------------------------------- */
+  --font-sans:   'Urbanist', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif:  'Hedvig Letters Serif', Georgia, 'Times New Roman', serif;
+  --font-body:   'Cormorant Garamond', Georgia, serif;
+  --font-script: 'Miama', 'Hedvig Letters Serif', cursive;
+  --font-ui:     var(--font-sans);
+
+  /* ---- type scale --------------------------------------------
+     The file currently uses 18 distinct family/weight/size combos.
+     These nine cover all of them. See README — worth consolidating.
+     ------------------------------------------------------------ */
+  --fs-display:  clamp(56px, 7.8vw, 112px);  /* Urbanist Light 112   */
+  --fs-script:   clamp(45px, 6.2vw, 89px);   /* Miama 89             */
+  --fs-h1:       clamp(46px, 6.1vw, 88px);   /* Hedvig Serif 88      */
+  --fs-h2:       clamp(38px, 4.5vw, 65px);   /* Hedvig Serif 65      */
+  --fs-h3:       clamp(32px, 3.8vw, 54px);   /* Hedvig / Urbanist 54 */
+  --fs-h4:       clamp(28px, 3.0vw, 43px);   /* Urbanist Regular 43  */
+  --fs-lead:     22px;                        /* Cormorant 22         */
+  --fs-body:     21px;                        /* Urbanist Light 21    */
+  --fs-ui:       14px;                        /* Urbanist 14          */
+
+  --lh-tight:    0.94;
+  --lh-snug:     1.15;
+  --lh-body:     1.62;
+
+  --ls-display:  -0.022em;
+  --ls-ui:        0.02em;
+
+  /* ---- layout ------------------------------------------------- */
+  --page:        1440px;
+  --gutter:      clamp(20px, 4.4vw, 84px);
+  --grid-cell:   84px;        /* the faint hero grid */
+  --radius-pill: 100px;
+  --radius-card: 2px;
+
+  /* ---- motion -------------------------------------------------
+     Scroll budget per beat, in viewport heights. This is the single
+     most important set of numbers in the prototype — tune these
+     first when the pacing feels wrong. scroll.js reads them by
+     section id, so changing a number here really does change the
+     scroll distance.
+     ------------------------------------------------------------ */
+  --beat-scatter:  180;   /* 1  cards drift                        */
+  --beat-circle:   250;   /* 2  circle fills screen, copy types in */
+  --beat-image:    400;   /* 3+4 image grows, marquee runs, SHOP   */
+  --beat-brands:   300;   /* 6  logos float, blur reveal           */
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast:    0.25s;
+  --dur-mid:     0.45s;
+}
+
+/* The page is a fixed brand surface — it does not invert with the
+   OS theme. Redeclared so a dark-mode viewer sees the design. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --maroon: #5A1A24;
+    --bone:   #EFE9E6;
+  }
+}
