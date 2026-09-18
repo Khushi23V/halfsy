@@ -1,5 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { gsap, ScrollTrigger, initScroll, destroyScroll } from './lib/scroll.js';
+import { initReveal } from './lib/reveal.js';
+import { initLoader } from './beats/loader.js';
 
 import { initHero }     from './beats/hero.js';
 import { initStory }    from './beats/story.js';
@@ -7,6 +9,7 @@ import { initProducts } from './beats/products.js';
 import { initBrands }   from './beats/brands.js';
 import { initFooter }   from './beats/footer.js';
 
+import Loader   from './components/Loader.jsx';
 import Nav      from './components/Nav.jsx';
 import Hero     from './components/Hero.jsx';
 import Story    from './components/Story.jsx';
@@ -38,9 +41,17 @@ export default function App() {
        height it should be. */
     const ctx = gsap.context(() => {
       const cleanups = [
+        /* first: it owns the resize/font re-split that every other
+           beat's line reveals depend on */
+        initReveal(),
+        /* second: it locks the scroll and holds the ready promise the
+           hero's intro waits on, so it has to exist before the hero
+           asks for it */
+        initLoader(),
         initHero(),
         initStory(),
         initProducts(),
+        initDrops(),
         initBrands(),
         initFooter()
       ].filter(Boolean);
@@ -75,6 +86,8 @@ export default function App() {
 
   return (
     <div ref={root}>
+      <Loader />
+
       <a className="skip-link" href="#beat-products">Skip to the edit</a>
 
       <Nav />
@@ -83,10 +96,8 @@ export default function App() {
         <Hero />
         <Story />
         <Products />
-        <Brands />
-                <Brands />
         <Drops />
-
+        <Brands />
       </main>
 
       {/* sibling of main, not a child - see Footer.jsx */}

@@ -40,6 +40,17 @@ export function initScroll() {
    the app twice in development. Without this the second mount adds a
    second Lenis instance and a second ticker callback, and the page
    scrolls at roughly double speed. */
+/* The page must not move while the loader is up. Lenis owns the
+   scroll, so stopping the body alone would not hold it. */
+export function lockScroll() {
+  document.documentElement.classList.add('is-locked');
+  lenis?.stop();
+}
+export function unlockScroll() {
+  document.documentElement.classList.remove('is-locked');
+  lenis?.start();
+}
+
 export function destroyScroll() {
   if (rafHandler) { gsap.ticker.remove(rafHandler); rafHandler = null; }
   if (lenis) { lenis.destroy(); lenis = null; }

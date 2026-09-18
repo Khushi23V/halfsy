@@ -1,4 +1,5 @@
-import { gsap, pinned, prefersReducedMotion } from '../lib/scroll.js';
+import { gsap, ScrollTrigger, pinned, prefersReducedMotion } from '../lib/scroll.js';
+import { prepareLines, playReveal } from '../lib/reveal.js';
 
 /* BEAT 6 - brand marks float in on a stagger, then the whole field
    blurs back and the invitation reads through it.
@@ -29,10 +30,34 @@ export function initBrands() {
     );
   });
 
+  /* The veil and the container are scrubbed; the LINES are a one-shot
+     fired once the blur is down. A scrubbed mask reveal reads as the
+     text being dragged rather than arriving. */
+  const head = reveal.querySelector('h2');
+  const sub  = reveal.querySelector('p');
+  prepareLines(head);
+  prepareLines(sub);
+
+  const cta = reveal.querySelector('.btn');
+  if (cta) gsap.set(cta, { opacity: 0, y: 14 });
+
   tl.to(veil,   { opacity: 1, ease: 'none', duration: 0.18 }, 0.52)
-    .fromTo(reveal,
-      { opacity: 0, y: 26 },
-      { opacity: 1, y: 0, ease: 'power2.out', duration: 0.18 },
-      0.58
-    );
+    .to(reveal, { opacity: 1, ease: 'none', duration: 0.06 }, 0.56);
+
+  let shown = false;
+  ScrollTrigger.create({
+    trigger: section,
+    start: () => 'top top-=' + Math.round(window.innerHeight *
+      (parseFloat(getComputedStyle(document.documentElement)
+        .getPropertyValue('--beat-brands')) || 190) / 100 * 0.58),
+    once: true,
+    onEnter: () => {
+      if (shown) return;
+      shown = true;
+      playReveal(head, { duration: 1.05, stagger: 0.1 });
+      playReveal(sub,  { duration: 1.05, stagger: 0.1, delay: 0.12 });
+      if (cta) gsap.to(cta, { opacity: 1, y: 0, duration: 0.7,
+                              ease: 'power2.out', delay: 0.45 });
+    }
+  });
 }

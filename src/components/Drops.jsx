@@ -8,9 +8,8 @@ export default function Drops() {
   return (
     <section className="beat drops" id="beat-drops">
       <header className="drops__head">
-        <p className="drops__eyebrow">Since midnight</p>
-        <h2>While you slept,<br />four pieces came down.</h2>
-        <p className="drops__note">None of them announced it.</p>
+        <h2>FEATURED PICKS</h2>
+        <p className="drops__note">Four we would take home.</p>
       </header>
 
       <div className="drops__row">
@@ -21,7 +20,6 @@ export default function Drops() {
             </div>
 
             <figcaption className="pick__meta">
-              <span className="pick__time">{d.time}</span>
               <h3 className="pick__brand">{d.brand}</h3>
               <p className="pick__piece">{d.piece}</p>
               <p className="pick__price">

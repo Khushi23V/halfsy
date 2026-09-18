@@ -18,14 +18,22 @@
    values if you prefer them.
    ------------------------------------------------------------ */
 export const HERO_CARDS = [
-  { src: '/images/hero/hero-10.jpg',  speed: 0.92, style: { left:  '-5%', top: '20%', width: 235 } },
-  { src: '/images/hero/hero-02.avif', speed: 1.05, style: { left:  '24%', top: '-6%', width: 165 } },
-  { src: '/images/hero/hero-09.jpg',  speed: 0.88, style: { left:  '47%', top:  '5%', width: 200 } },
-  { src: '/images/hero/hero-04.avif', speed: 1.12, style: { right: '12%', top: '10%', width: 180 } },
-  { src: '/images/hero/hero-05.avif', speed: 0.98, style: { right: '-5%', top: '34%', width: 160 } },
-  { src: '/images/hero/hero-06.avif', speed: 1.18, style: { left:   '9%', top: '55%', width: 170 } },
-  { src: '/images/hero/hero-07.avif', speed: 1.30, style: { left:  '31%', top: '68%', width: 200 } },
-  { src: '/images/hero/hero-03.avif', speed: 1.24, style: { left:  '58%', top: '62%', width: 235 } }
+  { src: '/images/hero/hero-10.jpg',  speed: 0.92, style: { left:  '-5%', top: '20%', width: 235 },
+    brand: 'Alexander McQueen', name: 'Draped crepe gown',        now: '$1,560', was: '$3,900' },
+  { src: '/images/hero/hero-02.avif', speed: 1.05, style: { left:  '24%', top: '-6%', width: 165 },
+    brand: 'Jacquemus',         name: 'Linen tailored jacket',    now: '$595',   was: '$1,190' },
+  { src: '/images/hero/hero-09.jpg',  speed: 0.88, style: { left:  '47%', top:  '5%', width: 200 },
+    brand: 'Roberto Cavalli',   name: 'Printed silk midi',        now: '$980',   was: '$2,450' },
+  { src: '/images/hero/hero-04.avif', speed: 1.12, style: { right: '12%', top: '10%', width: 180 },
+    brand: 'Jimmy Choo',        name: 'Chain-strap leather mule', now: '$472',   was: '$1,050' },
+  { src: '/images/hero/hero-05.avif', speed: 0.98, style: { right: '-5%', top: '34%', width: 160 },
+    brand: 'Burberry',          name: 'Cotton trench coat',       now: '$1,140', was: '$2,850' },
+  { src: '/images/hero/hero-06.avif', speed: 1.18, style: { left:   '9%', top: '55%', width: 170 },
+    brand: 'Cult Gaia',         name: 'Pleated satin maxi',       now: '$412',   was: '$895'   },
+  { src: '/images/hero/hero-07.avif', speed: 1.30, style: { left:  '31%', top: '68%', width: 200 },
+    brand: 'AMI Paris',         name: 'Wool blend overshirt',     now: '$338',   was: '$720'   },
+  { src: '/images/hero/hero-03.avif', speed: 1.24, style: { left:  '58%', top: '62%', width: 235 },
+    brand: 'Etro',              name: 'Paisley jacquard skirt',   now: '$640',   was: '$1,480' }
 ];
 /* ---- beat 5: products --------------------------------------
    Placeholder copy and prices. Real listings will come from the
@@ -96,16 +104,16 @@ export const MARQUEE = [
    it now carries an image per pick. */
 
 export const DROPS = [
-  { src: '/images/products/product-01.jpg', time: '02:41',
+  { src: '/images/hero/hero-01.avif', time: '02:41',
     brand: 'Alexander McQueen', piece: 'Draped crepe gown',
     was: '$3,900', now: '$1,560' },
-  { src: '/images/products/product-02.jpg', time: '04:08',
+  { src: '/images/hero/hero-05.avif', time: '04:08',
     brand: 'Jacquemus', piece: 'Linen tailored jacket',
     was: '$1,190', now: '$595' },
-  { src: '/images/products/product-03.jpg', time: '05:52',
+  { src: '/images/hero/hero-08.avif', time: '05:52',
     brand: 'Roberto Cavalli', piece: 'Printed silk midi',
     was: '$2,450', now: '$980' },
-  { src: '/images/products/product-04.jpg', time: '07:19',
+  { src: '/images/hero/hero-10.jpg', time: '07:19',
     brand: 'Jimmy Choo', piece: 'Chain-strap leather mule',
     was: '$1,050', now: '$472' }
 ];

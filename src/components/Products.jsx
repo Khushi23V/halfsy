@@ -7,9 +7,12 @@ import { PRODUCTS } from '../data/assets.js';
 export default function Products() {
   return (
     <section className="beat products" id="beat-products">
-      <h2 className="products__head">
-        Prices <span className="script">for</span> you
-      </h2>
+           <header className="products__intro">
+        <h2 className="products__head">
+          YOURS FOR LESS
+        </h2>
+        <p className="products__note">Shop without overpaying.</p>
+      </header>
 
       <div className="products__row">
         {PRODUCTS.map((p, i) => (

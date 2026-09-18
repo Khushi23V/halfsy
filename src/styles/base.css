@@ -69,13 +69,36 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   padding: 26px var(--gutter);
   color: var(--maroon);
-  transition: color var(--dur-mid) var(--ease-out);
+  transition: color var(--dur-mid) var(--ease-out),
+              opacity var(--dur-mid) var(--ease-out),
+              background-color var(--dur-mid) var(--ease-out),
+              border-color var(--dur-mid) var(--ease-out);
+  border-bottom: 1px solid transparent;
   mix-blend-mode: normal;
 }
 
 /* flipped to bone while the maroon and image beats are on screen —
    toggled from JS via a class on <body> */
 body.is-inverted .nav { color: var(--bone); }
+
+/* Frosted from the products section down. Above that the nav floats
+   over a full-bleed field and needs no ground; below it there is real
+   content running underneath. Two variants because the drops beat is
+   maroon - a light frost over it would read as a bright bar. */
+body.is-glass .nav {
+  background-color: rgba(239, 233, 230, 0.72);
+  backdrop-filter: blur(14px) saturate(1.25);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  border-bottom-color: var(--maroon-07);
+}
+body.is-glass.is-inverted .nav {
+  background-color: rgba(90, 26, 36, 0.58);
+  border-bottom-color: rgba(239, 233, 230, 0.14);
+}
+
+/* The footer artwork carries the brand, so the nav gets out of its
+   way. pointer-events too - an invisible nav is still clickable. */
+body.is-footer .nav { opacity: 0; pointer-events: none; }
 body.is-inverted .nav__cta { background: var(--bone); color: var(--maroon); }
 
 .nav__logo { width: 141px; color: currentColor; }
@@ -84,11 +107,16 @@ body.is-inverted .nav__cta { background: var(--bone); color: var(--maroon); }
 .nav__links {
   display: flex;
   align-items: center;
-  gap: 30px;
-  font-size: var(--fs-ui);
-  letter-spacing: var(--ls-ui);
+  gap: 36px;
+  font-size: 15px;
+  letter-spacing: 0.1em;
 }
-.nav__links a { opacity: 0.62; transition: opacity var(--dur-fast) var(--ease-out); }
+.nav__links a {
+  opacity: 1;
+  font-weight: 400;
+  text-transform: uppercase;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
 .nav__links a:hover, .nav__links a:focus-visible { opacity: 1; }
 
 .nav__cta {
@@ -101,6 +129,56 @@ body.is-inverted .nav__cta { background: var(--bone); color: var(--maroon); }
               color var(--dur-mid) var(--ease-out);
 }
 .nav__links a.nav__cta { opacity: 1; }
+
+/* ---------- the intro overlay --------------------------------
+   Above everything including the nav. Sits over a page that is
+   already laid out underneath, so the lift is a reveal, not a load.
+   ------------------------------------------------------------ */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: var(--bone);
+  will-change: transform;
+}
+.loader__inner { will-change: transform, opacity; }
+
+.loader__logo {
+  width: clamp(200px, 26vw, 360px);
+  height: auto;
+  overflow: visible;
+}
+/* Outline first, weight after - see loader.js for why the draw is
+   quick. stroke-width is in viewBox units, so it stays a hairline at
+   any rendered size. */
+.loader__logo path {
+  fill: var(--maroon);
+  stroke: var(--maroon);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Belt and braces with Lenis: nothing moves while the intro is up. */
+html.is-locked, html.is-locked body { overflow: hidden; }
+
+/* ---------- masked line reveal --------------------------------
+   One box per line, clipped, with the line pushed below it until it
+   is revealed. The mask needs room for descenders or the tails of
+   g/y/p are sliced off at rest - padding down, margin back up, so the
+   extra room costs no layout.
+   ------------------------------------------------------------ */
+.reveal__mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.reveal__line {
+  display: block;
+  will-change: transform;
+}
 
 /* ---------- shared primitives -------------------------------- */
 .beat { position: relative; }

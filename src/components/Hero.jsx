@@ -1,18 +1,5 @@
 import { HERO_CARDS, CIRCLE_COPY, STORY_IMAGE } from '../data/assets.js';
 
-/* Character spans for the typewriter. Spaces stay as bare text and the
-   spans stay `inline` - inline-block makes every glyph its own box and
-   words break mid-word when the line wraps. Only opacity animates. */
-function Chars({ text }) {
-  return (
-    <>
-      {[...text].map((ch, i) =>
-        ch === ' ' ? ' ' : <span className="hero__char" key={i}>{ch}</span>
-      )}
-    </>
-  );
-}
-
 /* BEATS 1 + 2, one section.
 
    They used to be two pinned sections that overlapped by a viewport,
@@ -26,9 +13,29 @@ export default function Hero() {
         <div className="grid-overlay" />
 
         {HERO_CARDS.map((card, i) => (
-          <div key={i} className="hero__card" data-speed={card.speed} style={card.style}>
+          /* The whole card is the link, not just the tag - a 150px
+             hover target that only becomes clickable once something
+             has appeared inside it is a bad target. This also gives
+             keyboard focus for free, and the tag's text is the link's
+             accessible name, which is why the image stays alt="". */
+          <a
+            key={i}
+            className="hero__card"
+            data-speed={card.speed}
+            style={card.style}
+            href={card.href || 'https://www.halfsy.shop/'}
+          >
             <img src={card.src} alt="" />
-          </div>
+
+            <span className="hero__tag">
+              <span className="hero__tag-brand">{card.brand}</span>
+              <span className="hero__tag-name">{card.name}</span>
+              <span className="hero__tag-price">
+                <span className="hero__tag-now">{card.now}</span>
+                <span className="hero__tag-was">{card.was}</span>
+              </span>
+            </span>
+          </a>
         ))}
 
         <div className="hero__type">
@@ -46,9 +53,7 @@ export default function Hero() {
             Cormorant at one size reads as a held thought; a heading
             and a body would read as two. */}
         <div className="hero__copy">
-          <p aria-label={CIRCLE_COPY}>
-            <span aria-hidden="true"><Chars text={CIRCLE_COPY} /></span>
-          </p>
+          <p>{CIRCLE_COPY}</p>
         </div>
 
         {/* rises from below, parks over the copy, then opens to full

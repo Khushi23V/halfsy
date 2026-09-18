@@ -15,7 +15,7 @@ export default function Nav() {
       <div className="nav__links">
         <a href="#beat-products">Shop</a>
         <a href="#beat-brands">Brands</a>
-        <a className="nav__cta" href="https://www.halfsy.shop/">Start browsing</a>
+
       </div>
     </nav>
   );

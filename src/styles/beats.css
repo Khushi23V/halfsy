@@ -19,6 +19,72 @@
 }
 .hero__card img { display: block; width: 100%; height: auto; }
 
+/* Paste into src/styles/beats.css, directly after the line:
+     .hero__card img { display: block; width: 100%; height: auto; }
+
+   Then, inside the existing @media (prefers-reduced-motion: reduce)
+   block, next to `.hero__card { display: none; }`, add:
+     .hero__tag { transition: none; }
+*/
+
+/* The tag slides up from inside the card's own overflow, which is why
+   it needs no extra layer and cannot be clipped by a neighbour. 101%
+   rather than 100% so no subpixel sliver shows at rest.
+
+   This is CSS, not GSAP, deliberately: GSAP owns `transform` on the
+   CARD, but the tag is a child it never touches, so a CSS transform
+   here is safe and survives even if the beat never initialises. */
+.hero__tag {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: block;
+  padding: 12px 14px 13px;
+  background: var(--maroon);
+  color: var(--bone);
+  text-align: left;
+  transform: translateY(101%);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero__card:hover .hero__tag,
+.hero__card:focus-visible .hero__tag { transform: translateY(0); }
+
+.hero__tag-brand {
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone-70);
+  margin-bottom: 5px;
+}
+/* The cards run 150-235px wide, so the name has to be allowed to
+   fail gracefully rather than wrap to three lines and push the
+   price out of the tag. */
+.hero__tag-name {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.2;
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero__tag-price {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  font-family: var(--font-sans);
+}
+.hero__tag-now { font-size: 15px; font-variant-numeric: tabular-nums; }
+.hero__tag-was {
+  font-size: 12px;
+  color: var(--bone-45);
+  text-decoration: line-through;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Lift on hover. GSAP owns `transform` on these and writes
    `scale: none` inline, so the scale goes through GSAP in hero.js -
    only the shadow is CSS. */
@@ -31,6 +97,8 @@
     box-shadow: 0 18px 40px -24px rgba(90, 26, 36, 0.35);
   }
 }
+
+
 
 .hero__type {
   position: absolute;
@@ -95,17 +163,11 @@
   font-family: var(--font-body);
   font-weight: 400;
   /* one held size - not a heading and a sub */
-  font-size: clamp(24px, 2.6vw, 38px);
+ font-size: clamp(19px, 2vw, 30px);
   line-height: 1.5;
   color: var(--bone);
 }
 
-/* Hidden in CSS, never in JS. If a refresh or a revert ever re-runs
-   the reveal out of order, the characters stay hidden rather than
-   stranded visible over the hero. `inline`, never inline-block:
-   inline-block makes every glyph its own box and words break
-   mid-word when the line wraps. */
-.hero__char { display: inline; opacity: 0; will-change: opacity; }
 
 /* rises from below the fold, parks over the copy, opens to full
    bleed - and beat 3 starts full bleed, so that seam is two
@@ -213,10 +275,10 @@
 
 .products__head {
   margin: 0 0 64px;
-  font-family: var(--font-sans);
-  font-weight: 300;
+  font-family: var(--font-body);
+  font-weight: 400;
   font-size: var(--fs-h4);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
 }
 .products__head .script { font-size: 1.05em; }
 
@@ -244,6 +306,16 @@
   margin: 0 0 6px;
 }
 
+.products__intro { margin: 0 0 64px; }
+.products__head  { margin: 0 0 8px; }
+.products__note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  color: var(--maroon-65);
+}
+
 /* the discount is the value prop — make it the loud thing */
 .product__price { display: flex; align-items: baseline; gap: 10px; }
 .product__now  { font-size: 21px; font-weight: 500; }
@@ -259,7 +331,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(24px, 4.5vh, 68px);
+  gap: clamp(14px, 2.6vh, 40px);
   /* no gutter - the rows are meant to run off both edges */
   padding: 0;
 }
@@ -273,8 +345,8 @@
   align-items: center;
   justify-content: space-between;
 }
-.brands__row--4 { width: 126%; margin-left: -13%; }
-.brands__row--3 { width: 106%; margin-left:  -3%; }
+.brands__row--4 { width: 116%; margin-left: -8%; }
+.brands__row--3 { width:  98%; margin-left:  1%; }
 
 .brands__logo {
   flex: 1;
@@ -284,8 +356,12 @@
   will-change: transform, opacity;
 }
 .brands__logo img {
-  max-height: clamp(80px, 7.5vh, 114px);
-  max-width: 100%;
+  /* The marks carry their own whitespace and it varies per file, so
+     this is an optical size, not a measured one. Raising it also
+     closes the gaps: the cells are equal-width, so a bigger image
+     eats the space rather than the layout handing it back. */
+  max-height: clamp(118px, 12.5vh, 200px);
+  max-width: 92%;
   width: auto;
   object-fit: contain;
   /* brand marks are all different weights - flatten them to one tone */
@@ -334,15 +410,6 @@
 .brands__reveal .btn { background: var(--black); color: var(--bone); }
 .brands__reveal .btn:hover { background: #1c1c1c; }
 
-/* Paste this into src/styles/beats.css, directly above the
-   "7. footer reveals from behind" block (and renumber that one to 9).
-   The reduced-motion and mobile additions are at the bottom - those go
-   INSIDE the existing @media blocks, not after them. */
-
-/* Replace your whole '7. overnight drops' block in beats.css with this.
-   Also: in the reduced-motion block change `.drop { opacity: 1; --rule: 100%; }`
-   to `.pick { opacity: 1; }`, and in the 860px block replace the three
-   `.drop` lines with `.drops__row { grid-template-columns: repeat(2, 1fr); }` */
 
 /* ---------- 7. overnight drops --------------------------------
    Maroon, after two bone beats. The page has been light since the
@@ -367,7 +434,7 @@
   color: var(--bone-45);
 }
 .drops__head h2 {
-  margin: 0 0 20px;
+  margin: 0 0 8px;
   font-family: var(--font-body);
   font-weight: 400;
   font-size: clamp(34px, 4.2vw, 62px);
@@ -376,10 +443,13 @@
 }
 .drops__note {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--fs-lead);
-  color: var(--bone-45);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  color: var(--bone-65);
 }
+
+
 
 /* Four polaroids at slightly wrong angles. The row is a grid so the
    cards stay on a shared baseline; the tilt is transform only, which
@@ -453,7 +523,6 @@
   font-size: clamp(17px, 1.4vw, 21px);
   font-variant-numeric: tabular-nums;
 }
-
 
 
 /* ---------- 8. one piece, watched -----------------------------
@@ -535,21 +604,6 @@
 }
 
 
-/* ---- add inside @media (prefers-reduced-motion: reduce) ---- */
-/*
-  .drop { opacity: 1; --rule: 100%; }
-  .history__dot, .history__label { opacity: 1; }
-  .history__line { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
-*/
-
-/* ---- add inside @media (max-width: 860px) ---- */
-/*
-  .drop { grid-template-columns: 72px 1fr; gap: 10px 20px; }
-  .drop__piece  { grid-column: 2; }
-  .drop__price  { grid-column: 2; }
-  .history__label:not(:first-child):not(:last-child) { display: none; }
-*/
-
 /* ---------- 7. footer reveals from behind ---------------------- */
 /* Everything above the footer scrolls up off it. The footer never
    moves — it is simply uncovered. Cheapest beat in the file. */
@@ -565,19 +619,21 @@
   padding: 140px var(--gutter) 0;
   overflow: hidden;
 
-  /* The artwork carries the wordmark edge to edge, so its width is
-     never allowed to crop. Height follows the 1441x626 ratio instead,
-     which also grows the empty lower area the legal line sits in. */
-  height: calc(100vw * 626 / 1441);
+  /* Fills the viewport, always. The artwork is pinned to the TOP and
+     sized to the full width, so its own height is 100vw*626/1441 - on
+     a tall screen that leaves a band below it, which --footer-bg fills
+     in the artwork's own maroon so the join is invisible. It used to
+     be sized to that ratio itself, which on a tall window left the
+     footer short of the fold with the page showing above it. */
+  height: 100svh;
 
-  background-color: var(--maroon);
+  background-color: var(--footer-bg);
   background-image: url('/images/footer.png');
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
 }
-.footer__spacer { height: min(calc(100vw * 626 / 1441), 100svh); }
-
+.footer__spacer { height: 100svh; }
 
 
 .footer__cols { display: flex; gap: 72px; font-size: var(--fs-ui); }
@@ -632,7 +688,9 @@
   .hero__type { position: relative; transform: none; padding: 180px var(--gutter) 120px; }
 
   .hero__fill    { clip-path: none; position: relative; min-height: 60vh; }
-  .hero__char    { opacity: 1 !important; }
+  .reveal__line  { transform: none !important; }
+  .reveal__mask  { overflow: visible; }
+  .hero__tag { transition: none; }
   .hero__copy    { position: relative; transform: none; z-index: auto;
                    opacity: 1; padding: 90px 0; margin: 0 auto; }
   .hero__media   { clip-path: none; position: relative; height: 70svh; }
@@ -653,6 +711,7 @@
                     padding: 0 0 120px; }
 
   .footer { position: relative; height: auto; }
+  body.is-footer .nav { opacity: 1; pointer-events: auto; }
   .footer__spacer { display: none; }
 }
 
@@ -664,6 +723,6 @@
   .products__row  { grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .brands__row--4 { width: 150%; margin-left: -25%; }
   .brands__row--3 { width: 122%; margin-left: -11%; }
-  .footer__top    { flex-direction: column; }
+  .footer__body   { flex-direction: column; align-items: flex-start; gap: 34px; }
   .nav__links a:not(.nav__cta) { display: none; }
 }

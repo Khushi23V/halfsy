@@ -1,4 +1,6 @@
 import { gsap, ScrollTrigger, pinned, prefersReducedMotion } from '../lib/scroll.js';
+import { prepareLines, playReveal } from '../lib/reveal.js';
+import { whenReady } from './loader.js';
 
 /* BEATS 1 + 2 - one pinned section, one timeline, no seam.
 
@@ -21,7 +23,8 @@ export function initHero() {
   if (!section || prefersReducedMotion) return;
 
   const cards = gsap.utils.toArray('.hero__card', section);
-  const chars = gsap.utils.toArray('.hero__char', section);
+  const display = section.querySelector('.hero__display');
+  const copyText = section.querySelector('.hero__copy p');
   const type  = section.querySelector('.hero__type');
   const hint  = section.querySelector('.hero__hint');
   const fill  = section.querySelector('.hero__fill');
@@ -33,32 +36,79 @@ export function initHero() {
   // scroll distance, in px, of a given fraction of the beat
   const at = f => Math.round(window.innerHeight * budget / 100 * f);
 
-  /* Nav flips to bone once the maroon covers the screen, not at the
-     section top - the top half of this beat is still bone. */
+  /* Nav flips to bone once the maroon covers the screen and stays bone
+     until the story beat is done. ONE trigger spanning both sections,
+     not one per section: two triggers toggling the same class hand off
+     at a boundary they disagree about and the loser's `false` wins -
+     which is why the logo went maroon again as the image filled. */
   ScrollTrigger.create({
     trigger: section,
-    start: () => 'top top-=' + at(0.36),
-    end:   () => 'top top-=' + at(1),
+    start: () => 'top top-=' + at(0.34),
+    endTrigger: '#beat-story',
+    end: 'bottom 40px',
     onToggle: self =>
       document.body.classList.toggle('is-inverted', self.isActive)
   });
 
-  /* Typing runs on its own clock, not the scrubbed timeline, so it
-     plays at a fixed speed and does not rewind with the scroll. Its
-     own trigger with once:true, NOT a .call() on the scrubbed
-     timeline - a scrub callback fires whenever the playhead crosses
-     it, including when ScrollTrigger.refresh() re-seeks after images
-     decode, which typed the whole passage during beat 1.
+  /* The headline gets its own treatment, not the mask reveal the rest
+     of the page uses - it is the first thing seen and should not look
+     like a system.
 
-     `amount` is total seconds for the passage regardless of character
-     count, so editing the copy changes the pace, not the duration. */
+     Tracking settles in from wide while a blur clears: type that
+     breathes in rather than slides in. It is the one animation here
+     that reflows every frame (letter-spacing changes layout), which is
+     why it is a single element, once, on load - a per-word version of
+     this would be genuinely expensive.
+
+     It waits for the loader rather than firing on mount, or it would
+     play out behind the overlay and be spent before anyone saw it. */
+    const script = display.querySelector('.script');
+
+  /* Transform and opacity only. The first version animated
+     letter-spacing and a 16px blur: the first reflows the whole line
+     every frame, the second repaints a 1400px-wide surface every
+     frame. Both are per-frame layout or paint work, which is exactly
+     what a 2s animation on the largest element on the page cannot
+     afford.
+
+     A slow scale settle reads the same - type relaxing into place -
+     and costs nothing, because transform and opacity are composited
+     and never touch layout. */
+  gsap.set(display, {
+    opacity: 0, yPercent: 12, scale: 1.05,
+    transformOrigin: '50% 60%', force3D: true
+  });
+  if (script) gsap.set(script, { opacity: 0 });
+
+  whenReady().then(() => {
+    const intro = gsap.timeline({
+      // the promotion is only worth holding while it animates
+      onComplete: () => gsap.set(display, { clearProps: 'willChange,transform' })
+    });
+    intro.to(display, {
+      opacity: 1, yPercent: 0, scale: 1,
+      duration: 1.8, ease: 'power3.out'
+    });
+    // the script word lands a beat later, so the eye catches it as a
+    // separate gesture rather than part of the same block
+    if (script) {
+      intro.to(script, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0.45);
+    }
+  });
+
+  /* The copy's lines are prepared now and revealed by their own
+     trigger, NOT by a .call() on the scrubbed timeline - a scrub
+     callback fires whenever the playhead crosses it, including when
+     ScrollTrigger.refresh() re-seeks after images decode, which used
+     to type the whole passage during beat 1. once:true can only run on
+     the way down, and the lines sit masked until it does. */
+  prepareLines(copyText);
+
   ScrollTrigger.create({
     trigger: section,
     start: () => 'top top-=' + at(0.40),
     once: true,
-    onEnter: () => gsap.to(chars, {
-      opacity: 1, duration: 0.01, ease: 'none', stagger: { amount: 1.3 }
-    })
+    onEnter: () => playReveal(copyText, { duration: 1.1, stagger: 0.12 })
   });
 
   const tl = pinned(section);
@@ -101,7 +151,7 @@ export function initHero() {
     0.22
   );
 
-    /* The characters are a one-shot and stay lit once typed. The
+    /* The lines are a one-shot and stay put once revealed. The
      CONTAINER is scrubbed, so scrolling back up takes the copy away
      with the circle instead of stranding bone text over the hero. */
   tl.fromTo(copy,
@@ -110,13 +160,16 @@ export function initHero() {
     0.38
   );
 
-  /* Image rises slowly and parks centred over the typed copy, then
-     opens from exactly there. The copy is never faded out - the image
-     covers it, which is what makes the two read as one movement. */
-  tl.to(media, { yPercent: 0, ease: 'power2.out', duration: 0.18 }, 0.58)
+  /* Image rises, parks over the copy, holds, then opens.
+
+     The open is the slowest thing in the page on purpose: 0.28 of the
+     beat, which at --beat-hero 380 is about 106vh of scroll. power1
+     rather than power2 keeps the rate even end to end, so it reads as
+     something being opened rather than a transition easing out. */
+  tl.to(media, { yPercent: 0, ease: 'power2.out', duration: 0.16 }, 0.50)
     .to(media,
-      { clipPath: 'inset(0% 0% round 0px)', ease: 'power2.inOut', duration: 0.20 },
-      0.80
+      { clipPath: 'inset(0% 0% round 0px)', ease: 'power1.inOut', duration: 0.28 },
+      0.72
     );
 
   /* Hover lift. Has to go through GSAP: it writes `scale: none` inline

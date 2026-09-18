@@ -10,7 +10,10 @@
      into --maroon rather than kept as a sixth token.
      ------------------------------------------------------------ */
   --maroon:        #5A1A24;
-  --bone:          #EFE9E6;
+  /* warmer than --maroon, matched to the footer artwork's own
+     field so the panel and the fill below it read as one */
+  --footer-bg:     #551722;
+  --bone:          #f4f4f4;
   --white:         #FFFFFF;
   --black:         #000000;   /* only the EXPLORE BRANDS button uses this */
 
@@ -37,8 +40,8 @@
      The file currently uses 18 distinct family/weight/size combos.
      These nine cover all of them. See README — worth consolidating.
      ------------------------------------------------------------ */
-  --fs-display:  clamp(56px, 7.8vw, 112px);  /* Urbanist Light 112   */
-  --fs-script:   clamp(45px, 6.2vw, 89px);   /* Miama 89             */
+  --fs-display:  clamp(26px, 7.8vw, 92px);  /* Urbanist Light 112   */
+   --fs-script:   clamp(88px, 8.6vw, 144px);  /* Miama 89 */  /* Miama 89             */
   --fs-h1:       clamp(46px, 6.1vw, 88px);   /* Hedvig Serif 88      */
   --fs-h2:       clamp(38px, 4.5vw, 65px);   /* Hedvig Serif 65      */
   --fs-h3:       clamp(32px, 3.8vw, 54px);   /* Hedvig / Urbanist 54 */
@@ -68,7 +71,7 @@
      section id, so changing a number here really does change the
      scroll distance.
      ------------------------------------------------------------ */
-  --beat-hero:     320;   /* 1+2 cards drift, circle fills, copy types */
+  --beat-hero:     380;   /* 1+2 cards drift, circle fills, copy types */
   --beat-image:    320;   /* 3+4 image grows, marquee runs, SHOP   */
   --beat-brands:   190;   /* 6  logos float, blur reveal           */
 
