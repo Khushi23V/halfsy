@@ -19,21 +19,7 @@
 }
 .hero__card img { display: block; width: 100%; height: auto; }
 
-/* Paste into src/styles/beats.css, directly after the line:
-     .hero__card img { display: block; width: 100%; height: auto; }
 
-   Then, inside the existing @media (prefers-reduced-motion: reduce)
-   block, next to `.hero__card { display: none; }`, add:
-     .hero__tag { transition: none; }
-*/
-
-/* The tag slides up from inside the card's own overflow, which is why
-   it needs no extra layer and cannot be clipped by a neighbour. 101%
-   rather than 100% so no subpixel sliver shows at rest.
-
-   This is CSS, not GSAP, deliberately: GSAP owns `transform` on the
-   CARD, but the tag is a child it never touches, so a CSS transform
-   here is safe and survives even if the beat never initialises. */
 .hero__tag {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -321,6 +307,151 @@
 .product__now  { font-size: 21px; font-weight: 500; }
 .product__was  { font-size: 14px; color: var(--maroon-38); text-decoration: line-through; }
 
+/* REPLACES the Swiper/coverflow CSS entirely. Delete that block -
+   none of its selectors are used, and you can `npm uninstall swiper`.
+
+   1. Paste into src/styles/beats.css, after the products block.
+
+   2. In @media (prefers-reduced-motion: reduce), REPLACE the
+      .reviews__swiper line with:
+
+        .reviews__stage { height: auto; perspective: none; }
+        .reviews__rim { position: relative; inset: auto; display: flex;
+                        gap: 18px; overflow-x: auto;
+                        padding: 0 var(--gutter) 10px;
+                        transform: none !important; }
+        .review { position: relative; left: auto; top: auto; margin: 0;
+                  flex: 0 0 auto; opacity: 1; transform: none !important; }
+
+   3. In @media (max-width: 860px), REPLACE the .reviews__swiper line:
+
+        .review { width: clamp(170px, 52vw, 220px);
+                  margin-left: calc(clamp(170px, 52vw, 220px) / -2);
+                  margin-top: calc((clamp(170px, 52vw, 220px) * 16 / 9) / -2); }
+*/
+
+/* ---------- video reviews: a rotating cylinder -----------------
+   Cards sit on the rim of a circle in 3D and the whole rim turns.
+   The radius and the perspective are set from JS, because both
+   depend on the card count and the rendered card width.
+   ------------------------------------------------------------ */
+.reviews {
+  position: relative;
+  z-index: 2;
+  background: var(--bone);
+  padding: 130px 0 150px;
+  overflow: hidden;
+}
+
+/* the heading keeps the page gutter; the wheel deliberately does not */
+.reviews__intro {
+  padding: 0 var(--gutter);
+  margin: 0 0 64px;
+  text-align: center;
+}
+
+.reviews__head {
+  margin: 0 0 8px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-h4);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reviews__head .script { font-size: 1.05em; }
+
+.reviews__note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  color: var(--maroon-65);
+}
+
+/* The stage owns the perspective - the vanishing point every card is
+   measured against. JS sets its value from the radius. */
+.reviews__stage {
+  position: relative;
+  height: clamp(340px, 46vh, 520px);
+  perspective-origin: 50% 46%;
+}
+
+/* preserve-3d is what keeps the children in the same 3D space as the
+   rim. Without it they flatten and the whole thing collapses into a
+   stack. */
+.reviews__rim {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+
+.review__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* The caption rides inside the card. On a cylinder the card is one
+   face - anything hanging below it turns out of plane and breaks. */
+.review__meta {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 34px 14px 13px;
+  color: var(--bone);
+  text-align: left;
+  /* a scrim, so the type holds whatever the video is doing underneath */
+  background: linear-gradient(to top,
+    rgba(90, 26, 36, 0.92) 0%, rgba(90, 26, 36, 0.72) 55%, transparent 100%);
+}
+.review__who {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone-70);
+}
+.review__buy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font-sans);
+}
+.review__piece { font-size: 12px; color: var(--bone-70); }
+/* the number is the evidence - it gets the weight */
+.review__saved {
+  font-size: 14px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.review {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  width: clamp(300px, 25vw, 420px);   /* unchanged */
+  aspect-ratio: 5 / 7;                 /* was 9 / 16 */
+  border-radius: 14px;                 /* Groww uses 15px */
+  overflow: hidden;
+  background: var(--maroon);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 30px 70px -44px rgba(90, 26, 36, 0.6);
+}
+
+/* the card facing you is the one playing, so it is the one at full
+   weight - the rest sit back */
+.review { opacity: 0.62; transition: opacity 0.6s ease; }
+
 /* ---------- 6. brands float, blur reveals ---------------------- */
 .brands { height: auto; }
 .brands__stage { background: var(--bone); }
@@ -604,9 +735,7 @@
 }
 
 
-/* ---------- 7. footer reveals from behind ---------------------- */
-/* Everything above the footer scrolls up off it. The footer never
-   moves — it is simply uncovered. Cheapest beat in the file. */
+
 .main { position: relative; z-index: 2; background: var(--bone); }
 
 .footer {
@@ -619,12 +748,6 @@
   padding: 140px var(--gutter) 0;
   overflow: hidden;
 
-  /* Fills the viewport, always. The artwork is pinned to the TOP and
-     sized to the full width, so its own height is 100vw*626/1441 - on
-     a tall screen that leaves a band below it, which --footer-bg fills
-     in the artwork's own maroon so the join is invisible. It used to
-     be sized to that ratio itself, which on a tall window left the
-     footer short of the fold with the page showing above it. */
   height: 100svh;
 
   background-color: var(--footer-bg);
@@ -669,10 +792,7 @@
   padding-bottom: 24px;
 }
 
-/* ---------- reduced motion -----------------------------------
-   Not a fallback — a second layout. Every pinned beat resolves
-   to a readable static state stacked vertically.
-   ------------------------------------------------------------ */
+
 @media (prefers-reduced-motion: reduce) {
   .hero { height: auto; }
   .story   { height: auto; }
@@ -686,7 +806,7 @@
 
   .hero__card { display: none; }
   .hero__type { position: relative; transform: none; padding: 180px var(--gutter) 120px; }
-
+.review { opacity: 1; }
   .hero__fill    { clip-path: none; position: relative; min-height: 60vh; }
   .reveal__line  { transform: none !important; }
   .reveal__mask  { overflow: visible; }
@@ -715,14 +835,12 @@
   .footer__spacer { display: none; }
 }
 
-/* ---------- mobile -------------------------------------------
-   Same principle: the scatter cannot survive 375px, so it
-   collapses. Tune this properly once the desktop beats land.
-   ------------------------------------------------------------ */
+
 @media (max-width: 860px) {
   .products__row  { grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .brands__row--4 { width: 150%; margin-left: -25%; }
   .brands__row--3 { width: 122%; margin-left: -11%; }
+  .review { width: clamp(220px, 66vw, 300px); }
   .footer__body   { flex-direction: column; align-items: flex-start; gap: 34px; }
   .nav__links a:not(.nav__cta) { display: none; }
 }

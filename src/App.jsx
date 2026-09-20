@@ -20,6 +20,8 @@ import Footer   from './components/Footer.jsx';
 import { initDrops }    from './beats/drops.js';
 
 import Drops    from './components/Drops.jsx';
+import { initReviews }  from './beats/reviews.js';
+import Reviews  from './components/Reviews.jsx';
 
 
 export default function App() {
@@ -51,6 +53,7 @@ export default function App() {
         initHero(),
         initStory(),
         initProducts(),
+        initReviews(),
         initDrops(),
         initBrands(),
         initFooter()
@@ -96,7 +99,9 @@ export default function App() {
         <Hero />
         <Story />
         <Products />
+        
         <Drops />
+        <Reviews />
         <Brands />
       </main>
 

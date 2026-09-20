@@ -20,7 +20,7 @@ export function initBrands() {
   /* 18 marks now, not 10. The stagger is spread across a fixed
      fraction of the beat rather than a fixed step per logo, so adding
      or removing rows changes the density, never the timing. */
-  const spread = 0.34;
+  const spread = 0.24;
   logos.forEach((logo, i) => {
     const drift = (i % 3 - 1) * 26;
     tl.fromTo(logo,
@@ -41,15 +41,34 @@ export function initBrands() {
   const cta = reveal.querySelector('.btn');
   if (cta) gsap.set(cta, { opacity: 0, y: 14 });
 
-  tl.to(veil,   { opacity: 1, ease: 'none', duration: 0.18 }, 0.52)
-    .to(reveal, { opacity: 1, ease: 'none', duration: 0.06 }, 0.56);
+  tl.to(veil,   { opacity: 1, ease: 'none', duration: 0.18 }, 0.46)
+    .to(reveal, { opacity: 1, ease: 'none', duration: 0.06 }, 0.50);
 
+  /* THE HOLD.
+
+     A GSAP timeline's duration is whatever its last child ends at, so
+     before this the timeline stopped at 0.64 - the moment the veil
+     finished - and the pin released on the same frame. There was no
+     tail to hold, which is why raising --beat-brands only slowed
+     everything down instead of adding one.
+
+     This empty tween extends the timeline to 1.19, and the scrub maps
+     that extra 0.55 onto real scroll: about 46% of the beat with the
+     field sitting blurred and nothing moving. It is the dial - raise
+     it for a longer hold, and raise --beat-brands if the logos start
+     floating in too fast as a result. */
+  tl.to({}, { duration: 0.55 }, 0.64);
+
+  /* Fires on raw scroll distance, independent of the timeline, so the
+     hold above does not push it later. 0.52 of the beat lands just
+     before the veil completes at ~0.54, so the words arrive as the
+     blur settles rather than after it. */
   let shown = false;
   ScrollTrigger.create({
     trigger: section,
     start: () => 'top top-=' + Math.round(window.innerHeight *
       (parseFloat(getComputedStyle(document.documentElement)
-        .getPropertyValue('--beat-brands')) || 190) / 100 * 0.58),
+         .getPropertyValue('--beat-brands')) || 300) / 100 * 0.52),
     once: true,
     onEnter: () => {
       if (shown) return;

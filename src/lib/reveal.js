@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from './scroll.js';
+import { whenReady } from '../beats/loader.js';
 
 /* ============================================================
    Masked line reveal.
@@ -174,7 +175,10 @@ export function initReveal() {
      split is measured against the fallback face, so it has to be
      redone once the real ones land. */
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(resplitAll);
+      whenReady().then(() => {
+    const fonts = (document.fonts && document.fonts.ready) || Promise.resolve();
+    return fonts.then(resplitAll);
+  });
   }
 
   return () => {

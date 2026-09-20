@@ -132,3 +132,19 @@ export const PRICE_HISTORY = {
     { label: 'Today',     value: 1300 }
   ]
 };
+
+
+export const REVIEWS = [
+  { video: '/videos/review-01.mp4', poster: '/videos/review-01.jpg',
+    who: 'R.M.', city: 'Mumbai',    piece: 'Burberry trench',      saved: '$1,710' },
+  { video: '/videos/review-02.mp4', poster: '/videos/review-02.jpg',
+    who: 'A.K.', city: 'Delhi',     piece: 'Jacquemus jacket',     saved: '$595'   },
+  { video: '/videos/review-03.mp4', poster: '/videos/review-03.jpg',
+    who: 'S.V.', city: 'Bengaluru', piece: 'Jimmy Choo mules',     saved: '$578'   },
+  { video: '/videos/review-04.mp4', poster: '/videos/review-04.jpg',
+    who: 'N.D.', city: 'Dubai',     piece: 'Roberto Cavalli midi', saved: '$1,470' },
+  { video: '/videos/review-05.mp4', poster: '/videos/review-05.jpg',
+    who: 'P.J.', city: 'Chennai',   piece: 'Etro jacquard skirt',  saved: '$840'   },
+  { video: '/videos/review-06.mp4', poster: '/videos/review-06.jpg',
+    who: 'M.S.', city: 'Kolkata',   piece: 'Raw Mango silk',       saved: '\u20b932,000' }
+];

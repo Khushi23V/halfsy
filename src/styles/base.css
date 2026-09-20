@@ -157,7 +157,7 @@ body.is-inverted .nav__cta { background: var(--bone); color: var(--maroon); }
   fill: var(--maroon);
   stroke: var(--maroon);
   stroke-width: 0.4;
-  vector-effect: non-scaling-stroke;
+
 }
 
 /* Belt and braces with Lenis: nothing moves while the intro is up. */

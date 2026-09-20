@@ -73,7 +73,7 @@
      ------------------------------------------------------------ */
   --beat-hero:     380;   /* 1+2 cards drift, circle fills, copy types */
   --beat-image:    320;   /* 3+4 image grows, marquee runs, SHOP   */
-  --beat-brands:   190;   /* 6  logos float, blur reveal           */
+    --beat-brands:   260;   /* 6  logos float, blur reveal           */
 
   --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast:    0.25s;
