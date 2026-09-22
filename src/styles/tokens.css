@@ -84,7 +84,7 @@
    OS theme. Redeclared so a dark-mode viewer sees the design. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --maroon: #5A1A24;
-    --bone:   #EFE9E6;
+    --maroon: #380d14;
+    --bone:   #f8f5f4;
   }
 }

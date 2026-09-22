@@ -50,6 +50,17 @@ export function initHero() {
       document.body.classList.toggle('is-inverted', self.isActive)
   });
 
+  /* The nav arrives with the about copy rather than with the story
+     image. 0.36 is just after the maroon fill completes and after the
+     inversion fires at 0.34, so it comes in bone over maroon with no
+     colour flip, and just before the copy reveals at 0.38. */
+  ScrollTrigger.create({
+    trigger: section,
+    start: () => 'top top-=' + at(0.36),
+    onEnter:     () => document.body.classList.add('is-navup'),
+    onLeaveBack: () => document.body.classList.remove('is-navup')
+  });
+
   /* The headline gets its own treatment, not the mask reveal the rest
      of the page uses - it is the first thing seen and should not look
      like a system.
@@ -172,17 +183,14 @@ export function initHero() {
       0.72
     );
 
-  /* Hover lift. Has to go through GSAP: it writes `scale: none` inline
-     when it takes over an element's transform, which kills a CSS hover
-     rule. Measured on the live page - gsap.quickTo on `scale` no-ops
-     here, a plain tween does not. */
-  const teardown = [];
+    const teardown = [];
   if (matchMedia('(hover: hover)').matches) {
     cards.forEach(card => {
       const lift = v => gsap.to(card, {
         scale: v, duration: 0.45, ease: 'power3.out', overwrite: 'auto'
       });
       const on = () => lift(1.07), off = () => lift(1);
+
       card.addEventListener('pointerenter', on);
       card.addEventListener('pointerleave', off);
       teardown.push(() => {
@@ -192,5 +200,9 @@ export function initHero() {
     });
   }
 
-  return () => teardown.forEach(fn => fn());
+  return () => {
+    document.body.classList.remove('is-navup');
+    teardown.forEach(fn => fn());
+  };
 }
+

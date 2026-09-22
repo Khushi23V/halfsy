@@ -48,28 +48,13 @@ const FILL = 1.16;
     stage.style.perspective = Math.round(radius * PERSPECTIVE_RATIO) + 'px';
 
     cards.forEach((c, i) => {
-      /* Anything past the solved count is simply not on the wheel.
-         The component renders a generous pool so there is always
-         enough to fill a wide screen; the rest stand down. */
+
       if (i >= n) { c.style.display = 'none'; return; }
       c.style.display = '';
 
-      /* Centring is done with margins, NOT a transform, because the
-         transform below has to stay purely 3D - a translate in front
-         of the rotate would be rotated along with it. */
       c.style.marginLeft = -(c.offsetWidth / 2) + 'px';
       c.style.marginTop  = -(c.offsetHeight / 2) + 'px';
 
-      /* Written as a raw string rather than through gsap.set, and the
-         order is the entire point. GSAP always writes
-         translate3d(...) rotateY(...) - move first, then spin in
-         place - which stacks every card on one spot. A cylinder needs
-         rotateY THEN translateZ: turn to face your slice, then push
-         out to the rim.
-
-         Z is NEGATIVE so the rim sits behind the origin. Positive Z
-         pulls the front card toward the camera, where perspective
-         magnifies it over everything else. */
       c.style.transform =
         'rotateY(' + (i * step) + 'deg) translateZ(' + (-radius) + 'px)';
     });

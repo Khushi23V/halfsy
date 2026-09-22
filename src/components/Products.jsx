@@ -6,15 +6,16 @@ import { PRODUCTS } from '../data/assets.js';
    below it will be measured against the wrong page height. */
 export default function Products() {
   return (
-    <section className="beat products" id="beat-products">
-           <header className="products__intro">
-        <h2 className="products__head">
-          YOURS FOR LESS
-        </h2>
-        <p className="products__note">Shop without overpaying.</p>
-      </header>
+<section className="beat products" id="beat-products">
+  <div className="products__layout">
 
-      <div className="products__row">
+    <header className="products__intro">
+      <h2 className="products__head">YOURS FOR LESS</h2>
+      <p className="products__note">Shop without overpaying.</p>
+      <a className="btn products__cta" href="/shop">Shop the best deals</a>
+    </header>
+
+    <div className="products__row">
         {PRODUCTS.map((p, i) => (
           <article className="product" key={i}>
             <div className="product__media"><img src={p.src} alt="" /></div>
@@ -25,7 +26,9 @@ export default function Products() {
             </p>
           </article>
         ))}
-      </div>
-    </section>
+    </div>
+
+  </div>
+</section>
   );
 }

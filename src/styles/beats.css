@@ -268,9 +268,29 @@
 }
 .products__head .script { font-size: 1.05em; }
 
+
+.products__layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;   /* was minmax(230px, 300px) */
+  gap: clamp(36px, 4.5vw, 72px);
+  align-items: center;
+}
+
+.products__note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 18px;              /* was var(--fs-body), 21px */
+  color: var(--maroon-65);
+}
+
+.products__intro { margin: 0; }              /* was 0 0 64px */
+
+.products__cta { margin-top: 28px; }
+
 .products__row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);     /* was 5 */
   gap: 24px;
 }
 
@@ -292,49 +312,16 @@
   margin: 0 0 6px;
 }
 
-.products__intro { margin: 0 0 64px; }
+
 .products__head  { margin: 0 0 8px; }
-.products__note {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: var(--fs-body);
-  color: var(--maroon-65);
-}
+
 
 /* the discount is the value prop — make it the loud thing */
 .product__price { display: flex; align-items: baseline; gap: 10px; }
 .product__now  { font-size: 21px; font-weight: 500; }
 .product__was  { font-size: 14px; color: var(--maroon-38); text-decoration: line-through; }
 
-/* REPLACES the Swiper/coverflow CSS entirely. Delete that block -
-   none of its selectors are used, and you can `npm uninstall swiper`.
 
-   1. Paste into src/styles/beats.css, after the products block.
-
-   2. In @media (prefers-reduced-motion: reduce), REPLACE the
-      .reviews__swiper line with:
-
-        .reviews__stage { height: auto; perspective: none; }
-        .reviews__rim { position: relative; inset: auto; display: flex;
-                        gap: 18px; overflow-x: auto;
-                        padding: 0 var(--gutter) 10px;
-                        transform: none !important; }
-        .review { position: relative; left: auto; top: auto; margin: 0;
-                  flex: 0 0 auto; opacity: 1; transform: none !important; }
-
-   3. In @media (max-width: 860px), REPLACE the .reviews__swiper line:
-
-        .review { width: clamp(170px, 52vw, 220px);
-                  margin-left: calc(clamp(170px, 52vw, 220px) / -2);
-                  margin-top: calc((clamp(170px, 52vw, 220px) * 16 / 9) / -2); }
-*/
-
-/* ---------- video reviews: a rotating cylinder -----------------
-   Cards sit on the rim of a circle in 3D and the whole rim turns.
-   The radius and the perspective are set from JS, because both
-   depend on the card count and the rendered card width.
-   ------------------------------------------------------------ */
 .reviews {
   position: relative;
   z-index: 2;
@@ -831,7 +818,8 @@
                     padding: 0 0 120px; }
 
   .footer { position: relative; height: auto; }
-  body.is-footer .nav { opacity: 1; pointer-events: auto; }
+.nav { opacity: 1; pointer-events: auto; transform: none; }
+body.is-footer .nav { opacity: 1; pointer-events: auto; }
   .footer__spacer { display: none; }
 }
 
@@ -841,6 +829,16 @@
   .brands__row--4 { width: 150%; margin-left: -25%; }
   .brands__row--3 { width: 122%; margin-left: -11%; }
   .review { width: clamp(220px, 66vw, 300px); }
-  .footer__body   { flex-direction: column; align-items: flex-start; gap: 34px; }
+  .nav { padding: 18px var(--gutter); }
+  .nav__logo { width: 104px; }
+  .nav__gender { gap: 10px; font-size: 13px; letter-spacing: 0.06em; }
+  .nav__search { width: 34px; border-bottom-color: transparent; }
+  .nav__search input { display: none; }
   .nav__links a:not(.nav__cta) { display: none; }
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
 }

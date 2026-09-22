@@ -44,7 +44,7 @@ export const PRODUCTS = [
   { src: '/images/hero/hero-04.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
   { src: '/images/hero/hero-06.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
   { src: '/images/hero/hero-07.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' },
-  { src: '/images/hero/hero-03.avif', name: 'Metallic Paisley Tiered Ruffle', now: '$1,300', was: '$3,250' }
+ 
 ];
 
 /* ---- beat 6: brand marks -----------------------------------
@@ -87,9 +87,9 @@ export const CIRCLE_COPY =
   'in price, and every listing takes you straight to the original store.';
 
 export const MARQUEE = [
-  { text: 'SHIRTS,',                      style: 'serif' },
-  { text: 'DRESSES,',                     style: 'serif' },
-  { text: 'JACKETS,',                     style: 'serif' },
+  { text: 'CLOTHING,',                      style: 'serif' },
+  { text: 'SHOES,',                     style: 'serif' },
+  { text: 'ACCESSORIES,',                     style: 'serif' },
   { text: 'everything at the best price', style: 'sans'  }
 ];
 
@@ -113,7 +113,7 @@ export const DROPS = [
   { src: '/images/hero/hero-08.avif', time: '05:52',
     brand: 'Roberto Cavalli', piece: 'Printed silk midi',
     was: '$2,450', now: '$980' },
-  { src: '/images/hero/hero-10.jpg', time: '07:19',
+  { src: '/images/hero/hero-04.avif', time: '07:19',
     brand: 'Jimmy Choo', piece: 'Chain-strap leather mule',
     was: '$1,050', now: '$472' }
 ];

@@ -1,22 +1,32 @@
-import Logo from './Logo.jsx';
+import Logo from '../components/Logo.jsx';
 
-/* Persistent. The story page is the front door, so SHOP has to be
-   reachable from every beat - this never unmounts. The colour flip is
-   driven by a class on <body>, set from invertNavDuring in scroll.js,
-   deliberately outside React: it changes many times a scroll and has
-   no business causing re-renders. */
 export default function Nav() {
   return (
     <nav className="nav">
+
+      <div className="nav__gender">
+        <a href="/women" className="is-active">Women</a>
+        <span className="nav__sep" aria-hidden="true">|</span>
+        <a href="/men">Men</a>
+      </div>
+
       <a className="nav__logo" href="/" aria-label="halfsy home">
         <Logo />
       </a>
 
-      <div className="nav__links">
-        <a href="#beat-products">Shop</a>
-        <a href="#beat-brands">Brands</a>
+      <form
+        className="nav__search"
+        role="search"
+        onSubmit={e => { e.preventDefault(); /* wire to /search?q= later */ }}
+      >
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M11 11l4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+        <label className="sr-only" htmlFor="nav-search">Search</label>
+        <input id="nav-search" type="search" placeholder="Search" autoComplete="off" />
+      </form>
 
-      </div>
     </nav>
   );
 }

@@ -27,8 +27,7 @@ export function initDrops() {
   const angles = [-3.2, 2.1, -1.6, 3];
   const rest   = i => angles[i % angles.length];
 
-  // dark section, so the nav goes bone over it
-  invertNavDuring(section);
+
 
   revealOnScroll('.drops__eyebrow, .drops__head h2, .drops__note',
     { trigger: section, start: 'top 74%', stagger: 0.09, groupStagger: 0.13 });

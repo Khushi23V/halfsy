@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section className="beat hero" id="beat-hero">
       <div className="stage">
-        <div className="grid-overlay" />
+        
 
         {HERO_CARDS.map((card, i) => (
           /* The whole card is the link, not just the tag - a 150px

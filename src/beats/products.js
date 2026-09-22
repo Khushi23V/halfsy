@@ -13,13 +13,11 @@ export function initProducts() {
      full-bleed field, so it needs its own ground. Ends at the footer,
      where the nav gets out of the way entirely. */
   ScrollTrigger.create({
-    trigger: section,
-    start: 'top 88%',
-    endTrigger: '.footer__spacer',
-    end: 'top 40px',
+    trigger: '#beat-story',
+    start: 'bottom 40px',
+    end: 'max',
     onToggle: self => document.body.classList.toggle('is-glass', self.isActive)
   });
-
   gsap.fromTo(section,
     { y: 120 },
     {
