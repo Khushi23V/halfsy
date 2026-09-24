@@ -77,24 +77,158 @@ a { color: inherit; text-decoration: none; }
 }
 
 body.is-navup .nav { opacity: 1; pointer-events: auto; transform: none; }
-/* flipped to bone while the maroon and image beats are on screen —
-   toggled from JS via a class on <body> */
+
 body.is-inverted .nav { color: var(--bone); }
 
 
-/* From the products beat down the nav sits over real content, so it
-   becomes a solid bar rather than floating. Opaque bone plus a soft
-   shadow — no backdrop-filter, which costs a full-width blur pass
-   every frame and buys nothing once the bar is opaque. */
 body.is-glass .nav {
   background-color: var(--bone);
   box-shadow: 0 14px 34px -22px rgba(90, 26, 36, 0.38);
 }
 
+/* ---------- menu --------------------------------------------- */
 
+/* hamburger → ✕ */
+.nav__menu svg { overflow: visible; }
+.nav__menu path {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--dur-mid) var(--ease-out),
+              opacity var(--dur-fast) var(--ease-out);
+}
+.nav.is-open .nav__menu path:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav.is-open .nav__menu path:nth-child(2) { opacity: 0; }
+.nav.is-open .nav__menu path:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* The footer artwork carries the brand, so the nav gets out of its
-   way. pointer-events too - an invisible nav is still clickable. */
+/* Open: solid bone, maroon ink, whatever beat is underneath. The
+   body prefix ties body.is-inverted .nav on specificity; source
+   order is what makes this win, so it stays below those rules. */
+body .nav.is-open {
+  color: var(--maroon);
+  background-color: var(--bone);
+  box-shadow: none;
+}
+
+/* Drops from under the bar. visibility rides the transition so the
+   closed panel is out of the tab order, not just clipped. */
+.nav__panel {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  max-height: calc(100svh - 90px);
+  overflow-y: auto;
+  padding: 0 var(--gutter) 56px;
+  background: var(--bone);
+  color: var(--maroon);
+  border-top: 1px solid var(--maroon-07);
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition: clip-path 0.55s var(--ease-out), visibility 0s linear 0.55s;
+}
+.nav.is-open .nav__panel {
+  clip-path: inset(0);
+  visibility: visible;
+  transition: clip-path 0.55s var(--ease-out), visibility 0s;
+}
+
+.nav__sections {
+  display: flex;
+  justify-content: center;
+  gap: clamp(28px, 4vw, 72px);
+  margin: 0;
+  padding: 22px 0;
+  list-style: none;
+  border-bottom: 1px solid var(--maroon-07);
+}
+.nav__sections a {
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.nav__sections a.is-active,
+.nav__sections a:hover,
+.nav__sections a:focus-visible { opacity: 1; }
+
+.nav__body {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 22vw);
+  gap: clamp(40px, 6vw, 120px);
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-top: 48px;
+  animation: nav-in 0.45s var(--ease-out);
+}
+@keyframes nav-in { from { opacity: 0; transform: translateY(8px); } }
+
+.nav__list-head {
+  margin: 0 0 28px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.nav__list ul {
+  margin: 0; padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: clamp(40px, 5vw, 96px);
+}
+.nav__list li { break-inside: avoid; }
+.nav__list a {
+  display: inline-block;
+  padding: 9px 0;
+  font-size: 17px;
+  font-weight: 300;
+}
+.nav__list a:hover,
+.nav__list a:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.nav__feature { display: block; }
+.nav__feature-media {
+  display: block;
+  height: min(52vh, 28vw);
+  overflow: hidden;
+  background: var(--maroon);   /* shows until the image exists */
+}
+.nav__feature-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out);
+}
+.nav__feature:hover img { transform: scale(1.03); }
+.nav__feature-label {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* dims the page under the open panel; one below the nav */
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(90, 26, 36, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-mid) var(--ease-out);
+}
+.nav-scrim.is-open { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 860px) {
+  .nav__sections { justify-content: flex-start; overflow-x: auto; }
+  .nav__body { grid-template-columns: 1fr; }
+  .nav__feature { display: none; }
+}
+
 body.is-footer .nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 
 .nav__logo { justify-self: center; width: 141px; color: currentColor; }
@@ -117,6 +251,30 @@ body.is-footer .nav { opacity: 0; pointer-events: none; transform: translateY(-1
 .nav__gender a:hover,
 .nav__gender a:focus-visible { opacity: 1; }
 .nav__sep { opacity: 0.25; }
+
+.nav__menu {
+  display: grid;
+  place-items: center;
+  width: 22px; height: 22px;
+  padding: 0;
+}
+.nav__menu svg { width: 22px; height: 14px; }
+
+/* the grid's third column - holds Shop + search */
+.nav__right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 2.4vw, 40px);
+}
+.nav__shop {
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.nav__shop:hover,
+.nav__shop:focus-visible { opacity: 0.6; }
 
 .nav__search {
   justify-self: end;

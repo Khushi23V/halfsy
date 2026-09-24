@@ -8,35 +8,44 @@ import { HERO_CARDS, CIRCLE_COPY, STORY_IMAGE } from '../data/assets.js';
    before its own beat began. One section, one timeline, no seam. */
 export default function Hero() {
   return (
-    <section className="beat hero" id="beat-hero">
+        <section className="beat hero" id="beat-hero">
       <div className="stage">
         
 
-        {HERO_CARDS.map((card, i) => (
-          /* The whole card is the link, not just the tag - a 150px
-             hover target that only becomes clickable once something
-             has appeared inside it is a bad target. This also gives
-             keyboard focus for free, and the tag's text is the link's
-             accessible name, which is why the image stays alt="". */
-          <a
-            key={i}
-            className="hero__card"
-            data-speed={card.speed}
-            style={card.style}
-            href={card.href || 'https://www.halfsy.shop/'}
-          >
-            <img src={card.src} alt="" />
-
-            <span className="hero__tag">
-              <span className="hero__tag-brand">{card.brand}</span>
-              <span className="hero__tag-name">{card.name}</span>
-              <span className="hero__tag-price">
-                <span className="hero__tag-now">{card.now}</span>
-                <span className="hero__tag-was">{card.was}</span>
-              </span>
-            </span>
-          </a>
-        ))}
+                {/* Two passes of the same cards, so the row never runs out on
+            either side while it slides. The second pass is decorative:
+            hidden from AT and out of the tab order. */}
+        <div className="hero__carousel">
+          <div className="hero__track">
+            {[...HERO_CARDS, ...HERO_CARDS, ...HERO_CARDS].map((card, i) => {
+              // the middle pass is the real one; the outer two are decorative
+              const dup = Math.floor(i / HERO_CARDS.length) !== 1;
+              return (
+                <a
+                                  
+                  key={i}
+                  className="hero__card"
+                  draggable={false}
+                  href={card.href || 'https://www.halfsy.shop/'}
+                  aria-hidden={dup || undefined}
+                  tabIndex={dup ? -1 : undefined}
+                >
+                  <img src={card.src} alt="" />
+                  {/* the link's accessible name - the image is alt="" */}
+                  <span className="sr-only">
+                    {card.brand} {card.name}, {card.now}
+                  </span>
+                  <span className="hero__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 12 12" fill="none">
+                      <path d="M3 9L9 3M4 3h5v5" stroke="currentColor"
+                        strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="hero__type">
           <h1 className="hero__display">

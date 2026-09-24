@@ -1,0 +1,480 @@
+/* ============================================================
+   shop.css - the /shop listings page.
+
+   Enlarged, close-set product grid (Net-a-Porter's density: images
+   nearly touching, captions breathing underneath), a sticky filter
+   rail in Urbanist, and the landing page's arrow box on hover.
+   ============================================================ */
+
+:root {
+  --nav-h: 86px;          /* the fixed nav's height, measured */
+  --rail: 264px;          /* filter column */
+  --tile-gap: 6px;        /* horizontal gap between images */
+  --tile-bg: #F2F1ED;     /* card ground - see .card__media img */
+}
+
+/* the page has no loader, so the nav is simply there */
+body.is-shop .nav { transition: none; }
+
+.shop {
+  position: relative;
+  z-index: 2;                           /* above the fixed footer */
+  background: var(--bone);
+  padding-top: var(--nav-h);
+  padding-bottom: 140px;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+/* ---------- header -------------------------------------------- */
+.shop__head { padding: 36px var(--gutter) 28px; }
+
+.shop__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 26px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--maroon-55);
+}
+.shop__crumbs button,
+.shop__crumbs a { letter-spacing: inherit; text-transform: inherit; }
+.shop__crumbs button:hover,
+.shop__crumbs a:hover { color: var(--maroon); }
+.shop__crumbs [aria-current] { color: var(--maroon); }
+
+.shop__titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.shop__title {
+  margin: 0 0 8px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-h3);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.shop__count {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--maroon-55);
+}
+
+.shop__tools { display: flex; align-items: center; gap: 22px; }
+
+.shop__sort select {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  background:
+    linear-gradient(45deg, transparent 50%, currentColor 50%) right 4px center / 5px 5px no-repeat,
+    linear-gradient(-45deg, transparent 50%, currentColor 50%) right 0 center / 5px 5px no-repeat;
+  border: 0;
+  border-bottom: 1px solid var(--maroon-38);
+  padding: 8px 22px 8px 0;
+  cursor: pointer;
+}
+.shop__sort select:focus-visible { outline: 1px solid var(--maroon); outline-offset: 4px; }
+
+.shop__filter-btn {
+  display: none;                        /* mobile only */
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border: 1px solid var(--maroon-38);
+}
+
+.shop__chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border: 1px solid var(--maroon-12);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.chip:hover { border-color: var(--maroon); }
+.chip span[aria-hidden] { font-size: 15px; line-height: 1; opacity: 0.6; }
+.shop__clear {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-left: 6px;
+}
+
+/* ---------- layout ---------------------------------------------- */
+.shop__layout {
+  display: grid;
+  grid-template-columns: var(--rail) 1fr;
+  align-items: start;
+}
+
+/* ---------- filter rail (Urbanist) ------------------------------ */
+.shop__filters {
+  position: sticky;
+  top: var(--nav-h);
+  max-height: calc(100vh - var(--nav-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--maroon-12) transparent;
+  padding: 4px 30px 40px var(--gutter);
+  font-family: var(--font-sans);
+  color: var(--maroon);
+}
+.filters__top { display: none; }       /* drawer header, mobile only */
+.filters__apply { display: none; }
+
+.filters__search input,
+.filters__mini {
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  color: var(--maroon);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--maroon-38);
+  padding: 10px 0;
+  border-radius: 0;
+}
+.filters__search { margin-bottom: 18px; }
+.filters__search input::placeholder,
+.filters__mini::placeholder { color: var(--maroon-55); }
+.filters__search input:focus,
+.filters__mini:focus { outline: none; border-bottom-color: var(--maroon); }
+.filters__mini { margin-bottom: 12px; font-size: 12px; padding: 6px 0; }
+
+.fgroup { border-top: 1px solid var(--maroon-12); }
+.fgroup__head { margin: 0; }
+.fgroup__head button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+/* a plus that turns into a minus */
+.fgroup__icon { position: relative; width: 9px; height: 9px; }
+.fgroup__icon::before,
+.fgroup__icon::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: currentColor;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.fgroup__icon::after { transform: rotate(90deg); }
+.fgroup.is-open .fgroup__icon::after { transform: rotate(0deg); }
+.fgroup__body { padding-bottom: 20px; }
+
+/* categories: the menu's tree, one level open at a time */
+.filters__cats,
+.filters__subs { list-style: none; margin: 0; padding: 0; }
+.filters__cats > li > button,
+.filters__subs button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px 0;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--maroon-90);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.filters__subs { margin: 2px 0 8px 14px; border-left: 1px solid var(--maroon-12); padding-left: 12px; }
+.filters__subs button { font-size: 13px; padding: 4px 0; color: var(--maroon-55); }
+.filters__cats button:hover { color: var(--maroon); }
+.filters__cats button.is-active { color: var(--maroon); font-weight: 500; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill {
+  padding: 7px 12px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--maroon-12);
+  transition: border-color var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+.pill:hover { border-color: var(--maroon-55); }
+.pill.is-active { background: var(--maroon); border-color: var(--maroon); color: var(--bone); }
+
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.check {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 14px;
+  font-weight: 300;
+  cursor: pointer;
+}
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.check__box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--maroon-38);
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.check input:checked + .check__box {
+  background: var(--maroon)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.3 2.3 4.7-5' fill='none' stroke='%23f4f4f4' stroke-width='1.4'/%3E%3C/svg%3E")
+    center / 100% no-repeat;
+  border-color: var(--maroon);
+}
+.check input:focus-visible + .check__box { outline: 1px solid var(--maroon); outline-offset: 3px; }
+.check__count { font-size: 12px; color: var(--maroon-38); font-variant-numeric: tabular-nums; }
+.check.is-empty { opacity: 0.4; }
+
+.filters__more {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.filters__note { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: var(--maroon-55); }
+
+/* ---------- grid ----------------------------------------------- */
+/* runs to the right edge of the window, like the reference; only the
+   images nearly touch - the captions get room underneath */
+.shop__results { min-width: 0; padding-right: var(--tile-gap); }
+
+.shop__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 54px var(--tile-gap);
+}
+@media (min-width: 1680px) {
+  .shop__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.card { position: relative; }
+.card__link { display: block; color: var(--maroon); }
+.card__link:focus-visible { outline: none; }
+.card__link:focus-visible .card__media { outline: 1px solid var(--maroon); outline-offset: -1px; }
+
+.card__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--tile-bg);
+}
+/* multiply turns each retailer's white studio backdrop into the same
+   warm ground, so Mytheresa, SSENSE and Bergdorf shots sit together
+   instead of as a patchwork of whites and greys */
+.card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  transition: transform 0.9s var(--ease-out);
+}
+.card__media.is-broken img { visibility: hidden; }
+
+/* the landing page's hero-card arrow (.hero__arrow), same box, same
+   rise from the corner */
+.card__arrow {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: clamp(42px, 3.2vw, 54px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--bone);
+  transform: translateY(105%);
+  transition: transform 0.5s var(--ease-out);
+}
+/* comes in from the lower left and rests centred (see .hero__arrow) */
+.card__arrow svg { width: 16px; height: 16px; transform: translate(-3px, 3px); transition: transform 0.5s var(--ease-out); }
+
+.card__link:hover .card__arrow,
+.card__link:focus-visible .card__arrow { transform: none; }
+.card__link:hover .card__arrow svg,
+.card__link:focus-visible .card__arrow svg { transform: none; }
+.card__link:hover .card__media img { transform: scale(1.03); }
+
+.card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 18px 20px 0;
+}
+.card__brand {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.card__name {
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.3;
+  color: var(--maroon-90);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.card__now { font-size: 15px; font-weight: 500; }
+.card__was { font-size: 13px; color: var(--maroon-38); text-decoration: line-through; }
+.card__off { font-size: 12px; letter-spacing: 0.06em; color: var(--maroon); }
+.card__retailer {
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--maroon-55);
+}
+
+/* the heart, top right, as on the reference */
+.card__save {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 38px; height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--maroon);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.card__save:hover { transform: scale(1.08); }
+.card__save svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.card__save[aria-pressed='true'] svg { fill: currentColor; }
+
+.shop__more { margin: 80px 0 0; text-align: center; }
+.shop__more p { margin: 0 0 18px; font-size: 13px; color: var(--maroon-55); }
+
+.shop__empty { padding: 120px 0; text-align: center; }
+.shop__empty p { margin: 0 0 24px; font-family: var(--font-body); font-size: var(--fs-lead); }
+
+.shop__scrim { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card__media img, .card__arrow, .card__arrow svg { transition: none; }
+}
+
+/* ---------- tablet --------------------------------------------- */
+@media (max-width: 1180px) {
+  :root { --rail: 230px; }
+  .shop__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- mobile: the rail becomes a drawer ------------------- */
+@media (max-width: 860px) {
+  :root { --nav-h: 64px; }
+  .shop__layout { grid-template-columns: 1fr; }
+  .shop__titlebar { flex-direction: column; align-items: flex-start; }
+  .shop__tools { width: 100%; justify-content: space-between; }
+  .shop__filter-btn { display: inline-block; }
+  .shop__results { padding: 0 2px; }
+  .shop__grid { gap: 40px 2px; }
+  .card__info { padding: 12px 10px 0; }
+  .card__name { font-size: 16px; }
+  .card__save { top: 8px; right: 8px; width: 32px; height: 32px; }
+  .card__arrow { display: none; }       /* no hover on touch */
+
+  .shop__filters {
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 200;
+    width: min(88vw, 380px);
+    max-height: none;
+    background: var(--bone);
+    padding: 0 24px;
+    transform: translateX(-102%);
+    transition: transform 0.45s var(--ease-out);
+    box-shadow: 20px 0 60px -30px rgba(90, 26, 36, 0.4);
+  }
+  .shop__filters.is-open { transform: none; }
+  /* .shop is its own stacking context (z-index 2, to sit over the
+     fixed footer), so the drawer's z-index cannot beat the nav from
+     inside it - the whole page is lifted while the drawer is open */
+  body.is-drawer .shop { z-index: 150; }
+  .filters__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--bone);
+    padding: 22px 0 14px;
+    z-index: 1;
+  }
+  .filters__top h2 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .filters__close { font-size: 26px; line-height: 1; padding: 4px 8px; }
+  /* sticky, not fixed: the drawer is transformed, which would make a
+     fixed child scroll away with the drawer's own content */
+  .filters__apply {
+    display: block;
+    position: sticky;
+    bottom: 0;
+    margin: 12px -24px 0;
+    padding: 16px 24px 22px;
+    background: var(--bone);
+    border-top: 1px solid var(--maroon-12);
+  }
+  .filters__apply .btn { width: 100%; justify-content: center; }
+
+  .shop__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    background: rgba(90, 26, 36, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-mid) var(--ease-out);
+  }
+  .shop__scrim.is-open { opacity: 1; pointer-events: auto; }
+}

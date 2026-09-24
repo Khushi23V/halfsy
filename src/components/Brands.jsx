@@ -52,7 +52,7 @@ export default function Brands() {
         <div className="brands__reveal">
           <h2>BROWSE THROUGH<br />HUNDREDS OF BRANDS</h2>
           <p>Every listing links straight to the original store.</p>
-          <a className="btn" href="https://www.halfsy.shop/brands">Explore brands</a>
+          <a className="btn" href="/brands">Explore brands</a>
         </div>
       </div>
     </section>

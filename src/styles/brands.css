@@ -1,0 +1,182 @@
+/* ============================================================
+   brands.css - /brands, The Houses (A-Z index).
+
+   Rides on shop.css for the page frame (.shop, .shop__head, the
+   crumbs, title and count). Cormorant for names and letters,
+   Urbanist for everything else.
+   ============================================================ */
+
+.bindex { padding: 30px var(--gutter) 40px; }
+
+.bindex__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+.bindex__top h2 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 44px);
+  letter-spacing: 0.04em;
+}
+.bindex__find input {
+  width: min(320px, 70vw);
+  font: inherit;
+  font-size: 14px;
+  color: var(--maroon);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--maroon-38);
+  border-radius: 0;
+  padding: 10px 0;
+}
+.bindex__find input::placeholder { color: var(--maroon-55); }
+.bindex__find input:focus { outline: none; border-bottom-color: var(--maroon); }
+
+/* the letter bar sticks under the nav while the list scrolls past */
+.alpha {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px clamp(8px, 1.3vw, 20px);
+  padding: 14px 0;
+  background: var(--bone);
+  border-top: 1px solid var(--maroon);
+  border-bottom: 1px solid var(--maroon-12);
+  margin-bottom: 12px;
+}
+.alpha a,
+.alpha span {
+  min-width: 22px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.3;
+}
+.alpha a { color: var(--maroon); transition: opacity var(--dur-fast) var(--ease-out); }
+.alpha a:hover { opacity: 0.6; }
+.alpha a.is-on {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.alpha .is-empty { color: var(--maroon-12); }
+
+.bgroup {
+  display: grid;
+  grid-template-columns: clamp(90px, 11vw, 190px) 1fr;
+  border-bottom: 1px solid var(--maroon-12);
+  scroll-margin-top: 160px;
+}
+.bgroup__letter {
+  font-family: var(--font-body);
+  font-size: clamp(80px, 8vw, 128px);
+  line-height: 0.9;
+  padding: 22px 0;
+}
+.bgroup__rows { list-style: none; margin: 0; padding: 0; }
+.bgroup__rows li + li { border-top: 1px solid var(--maroon-12); }
+
+.brow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  align-items: baseline;
+  gap: 20px;
+  padding: 24px 0 22px;
+  color: var(--maroon);
+  transition: padding-left 0.5s var(--ease-out);
+}
+.brow__name {
+  font-family: var(--font-body);
+  font-size: clamp(26px, 2.4vw, 38px);
+  line-height: 1.05;
+}
+.brow__arrow {
+  justify-self: end;
+  align-self: center;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--bone);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.brow__arrow svg { width: 14px; height: 14px; }
+
+.brow:hover,
+.brow:focus-visible { padding-left: 18px; }
+.brow:hover .brow__name,
+.brow:focus-visible .brow__name { font-style: italic; }
+.brow:hover .brow__arrow,
+.brow:focus-visible .brow__arrow { opacity: 1; transform: none; }
+.brow:focus-visible { outline: 1px solid var(--maroon); outline-offset: 4px; }
+
+.bindex__empty {
+  padding: 80px 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  color: var(--maroon-55);
+}
+
+/* ---- the hover card: the brand's mark ------------------------------
+   Fixed to the viewport, positioned by BrandsPage's rAF loop. White
+   ground because the marks are cut out for white; a slight tilt so it
+   reads as a card held up, not a tooltip. */
+.bpeek {
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 60;
+  width: 250px;
+  pointer-events: none;
+  background: var(--white);
+  box-shadow: 0 30px 60px -28px rgba(90, 26, 36, 0.5), 0 2px 8px -4px rgba(90, 26, 36, 0.2);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9) rotate(-2deg);
+  transition: opacity 0.3s var(--ease-out), transform 0.45s var(--ease-out);
+}
+.bpeek.is-on { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+
+.bpeek__mark {
+  height: 190px;
+  display: grid;
+  place-items: center;
+  padding: 26px 30px;
+}
+.bpeek__mark img { max-width: 100%; max-height: 100%; object-fit: contain; }
+/* no mark on file yet: the name, set like one */
+.bpeek__word {
+  font-family: var(--font-body);
+  font-size: 30px;
+  line-height: 1.05;
+  text-align: center;
+  letter-spacing: 0.02em;
+  color: var(--maroon);
+}
+@media (hover: none) { .bpeek { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .brow, .brow__arrow, .bpeek { transition: none; }
+}
+
+@media (max-width: 860px) {
+  /* the phone nav is already full (Women | Men, logo, Shop, search) */
+  .nav__brands { display: none; }
+  .bindex__top { flex-direction: column; align-items: flex-start; }
+  .bindex__find input { width: 100%; }
+  .alpha { gap: 2px 6px; }
+  .alpha a, .alpha span { min-width: 18px; font-size: 17px; }
+  .bgroup { grid-template-columns: 1fr; }
+  .bgroup__letter { font-size: 64px; padding: 20px 0 4px; }
+  .brow { padding: 18px 0; }
+  .brow__arrow { display: none; }
+}

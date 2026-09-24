@@ -2,22 +2,7 @@ import { gsap, ScrollTrigger, pinned, prefersReducedMotion } from '../lib/scroll
 import { prepareLines, playReveal } from '../lib/reveal.js';
 import { whenReady } from './loader.js';
 
-/* BEATS 1 + 2 - one pinned section, one timeline, no seam.
 
-   Positions are fractions of the whole beat:
-     0.00-0.26  cards drift up and clear
-     0.00-0.30  headline drifts, fades out at 0.24
-     0.22-0.40  circle grows from nothing to full bleed
-     0.40       typing fires, on its own clock
-     0.58-0.76  image rises from below the fold, parks over the copy
-     0.80-1.00  image opens to full bleed
-
-   Nothing here needs immediateRender tricks or a twin element. Those
-   existed only because this used to be two pinned sections that
-   overlapped, so each had to paint what the other could not reach.
-
-   Returns a cleanup: the hover listeners are plain DOM listeners and
-   gsap.context() cannot collect them. */
 export function initHero() {
   const section = document.querySelector('#beat-hero');
   if (!section || prefersReducedMotion) return;
@@ -30,61 +15,37 @@ export function initHero() {
   const fill  = section.querySelector('.hero__fill');
   const media = section.querySelector('.hero__media');
   const copy  = section.querySelector('.hero__copy');
+    const carousel = section.querySelector('.hero__carousel');
+  const track    = section.querySelector('.hero__track');
+  // dark hero: nav is bone from the first frame, not from the fill
+  const dark = section.classList.contains('hero--dark');
   const budget = parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--beat-hero')
   ) || 320;
   // scroll distance, in px, of a given fraction of the beat
   const at = f => Math.round(window.innerHeight * budget / 100 * f);
 
-  /* Nav flips to bone once the maroon covers the screen and stays bone
-     until the story beat is done. ONE trigger spanning both sections,
-     not one per section: two triggers toggling the same class hand off
-     at a boundary they disagree about and the loser's `false` wins -
-     which is why the logo went maroon again as the image filled. */
+
+  const boneNav = y => dark
+    ? (y < at(0.34) || y > at(0.90))
+    : y > at(0.34);
+
   ScrollTrigger.create({
     trigger: section,
-    start: () => 'top top-=' + at(0.34),
+    start: 'top top',
     endTrigger: '#beat-story',
     end: 'bottom 40px',
-    onToggle: self =>
-      document.body.classList.toggle('is-inverted', self.isActive)
+    onUpdate: self => document.body.classList.toggle(
+      'is-inverted', boneNav(self.scroll() - self.start)),
+    onLeave: () => document.body.classList.remove('is-inverted')
   });
+  document.body.classList.toggle('is-inverted', dark);
 
-  /* The nav arrives with the about copy rather than with the story
-     image. 0.36 is just after the maroon fill completes and after the
-     inversion fires at 0.34, so it comes in bone over maroon with no
-     colour flip, and just before the copy reveals at 0.38. */
-  ScrollTrigger.create({
-    trigger: section,
-    start: () => 'top top-=' + at(0.36),
-    onEnter:     () => document.body.classList.add('is-navup'),
-    onLeaveBack: () => document.body.classList.remove('is-navup')
-  });
+  // header is on from the start - arrives as the loader lifts
+  whenReady().then(() => document.body.classList.add('is-navup'));
 
-  /* The headline gets its own treatment, not the mask reveal the rest
-     of the page uses - it is the first thing seen and should not look
-     like a system.
-
-     Tracking settles in from wide while a blur clears: type that
-     breathes in rather than slides in. It is the one animation here
-     that reflows every frame (letter-spacing changes layout), which is
-     why it is a single element, once, on load - a per-word version of
-     this would be genuinely expensive.
-
-     It waits for the loader rather than firing on mount, or it would
-     play out behind the overlay and be spent before anyone saw it. */
     const script = display.querySelector('.script');
 
-  /* Transform and opacity only. The first version animated
-     letter-spacing and a 16px blur: the first reflows the whole line
-     every frame, the second repaints a 1400px-wide surface every
-     frame. Both are per-frame layout or paint work, which is exactly
-     what a 2s animation on the largest element on the page cannot
-     afford.
-
-     A slow scale settle reads the same - type relaxing into place -
-     and costs nothing, because transform and opacity are composited
-     and never touch layout. */
   gsap.set(display, {
     opacity: 0, yPercent: 12, scale: 1.05,
     transformOrigin: '50% 60%', force3D: true
@@ -107,12 +68,7 @@ export function initHero() {
     }
   });
 
-  /* The copy's lines are prepared now and revealed by their own
-     trigger, NOT by a .call() on the scrubbed timeline - a scrub
-     callback fires whenever the playhead crosses it, including when
-     ScrollTrigger.refresh() re-seeks after images decode, which used
-     to type the whole passage during beat 1. once:true can only run on
-     the way down, and the lines sit masked until it does. */
+  
   prepareLines(copyText);
 
   ScrollTrigger.create({
@@ -126,30 +82,47 @@ export function initHero() {
 
   gsap.set(media, { yPercent: 100 });
 
-  /* Cards. The distance is a FUNCTION: the cards have no fixed height,
-     so offsetHeight is near zero until the image decodes, and a number
-     read at init gets frozen into the tween where refresh() cannot
-     correct it. That is the bug where the beat ran long while the
-     cards kept a stub travel, and whether it happened depended on
-     whether the images were cached. */
-  const speeds = cards.map(c => parseFloat(c.dataset.speed) || 1);
-  const lo = Math.min(...speeds), hi = Math.max(...speeds);
 
-  cards.forEach((card, i) => {
-    const t = hi === lo ? 0 : (speeds[i] - lo) / (hi - lo);
-    const finishAt = 0.26 - 0.08 * t;   // nearest cards clear first
+  /* Free drag that loops. pos.off is unbounded; render() wraps it by
+     one pass of cards, so there are no ends to hit. */
+  const N = cards.length / 3;
+  const CENTRE = N;
+  const xFor = i => {
+    const c = cards[i];
+    return carousel.clientWidth / 2 - (c.offsetLeft + c.offsetWidth / 2);
+  };
+  const period = () => cards[N].offsetLeft - cards[0].offsetLeft;
+  const pos = { off: 0 };
+  const render = () => {
+    const home = xFor(CENTRE), P = period();
+    gsap.set(track, { x: gsap.utils.wrap(home - P / 2, home + P / 2, home + pos.off) });
+    focus();
+  };
+  const place = () => gsap.set(track, { x: xFor(current) });
 
-    tl.fromTo(card,
-      { y: 0 },
-      { y: () => -(card.offsetTop + card.offsetHeight + 60),
-        ease: 'none', duration: finishAt },
-      0
-    );
-  });
+  const focus = () => {
+    const w = cards[0].offsetWidth;
+    const mid = carousel.clientWidth / 2;
+    const half = window.innerWidth / 2;
+    const tx = gsap.getProperty(track, 'x');
 
-  // headline drifts the whole way, then clears as the last card goes
-  tl.fromTo(type, { y: 0 }, { y: -90, ease: 'none', duration: 0.30 }, 0)
-    .to(type, { opacity: 0, ease: 'none', duration: 0.06 }, 0.24);
+    const d = cards.map(c => Math.abs(c.offsetLeft + w / 2 + tx - mid) / half);
+    const s = d.map(v => 1 + 0.2 * Math.max(0, 1 - v * 3.2));
+    const g = s.map(v => (v - 1) * w);
+    const total = g.reduce((a, b) => a + b, 0);
+    const top = s.indexOf(Math.max(...s));
+
+    let before = 0;
+    cards.forEach((c, i) => {
+      gsap.set(c, { scale: s[i], x: before + g[i] / 2 - total / 2, zIndex: i === top ? 3 : 1 });
+      before += g[i];
+      c.classList.toggle('is-far',  d[i] > 0.5);
+      c.classList.toggle('is-edge', d[i] > 0.75);
+    });
+  };
+  
+
+
 
   if (hint) tl.to(hint, { opacity: 0, duration: 0.04 }, 0);
 
@@ -182,27 +155,70 @@ export function initHero() {
       { clipPath: 'inset(0% 0% round 0px)', ease: 'power1.inOut', duration: 0.28 },
       0.72
     );
+  const onRefresh = render;
+  ScrollTrigger.addEventListener('refresh', onRefresh);
+  render();
+  /* Drag. Move/up listen on window, not with setPointerCapture:
+     capture retargets the click to the carousel, and the cards are
+     links. Release projects the flick velocity forward and snaps to
+     the nearest card, so one always settles in the middle. */
+  const teardown = [];
 
-    const teardown = [];
-  if (matchMedia('(hover: hover)').matches) {
-    cards.forEach(card => {
-      const lift = v => gsap.to(card, {
-        scale: v, duration: 0.45, ease: 'power3.out', overwrite: 'auto'
-      });
-      const on = () => lift(1.07), off = () => lift(1);
+  let dragging = false, moved = false;
+  let startX = 0, startOff = 0, lastX = 0, lastT = 0, vel = 0;
 
-      card.addEventListener('pointerenter', on);
-      card.addEventListener('pointerleave', off);
-      teardown.push(() => {
-        card.removeEventListener('pointerenter', on);
-        card.removeEventListener('pointerleave', off);
-      });
-    });
-  }
+  const down = e => {
+    if (e.button !== 0) return;
+    dragging = true; moved = false;
+    startX = lastX = e.clientX;
+    lastT = performance.now(); vel = 0;
+    gsap.killTweensOf(pos);          // grab it mid-coast
+    startOff = pos.off;
+    carousel.classList.add('is-dragging');
+  };
+  const move = e => {
+    if (!dragging) return;
+    const now = performance.now();
+    vel = (e.clientX - lastX) / Math.max(1, now - lastT);   // px per ms
+    lastX = e.clientX; lastT = now;
+    if (Math.abs(e.clientX - startX) > 5) moved = true;
+    pos.off = startOff + (e.clientX - startX);
+    render();
+  };
+  const up = () => {
+    if (!dragging) return;
+    dragging = false;
+    carousel.classList.remove('is-dragging');
+    // held still before letting go = no flick
+    if (performance.now() - lastT > 80) vel = 0;
+    gsap.to(pos, { off: pos.off + vel * 700, duration: 1.4, ease: 'power3.out', onUpdate: render });
+  };
+  // a drag is not a click - swallow the one that follows it
+  const click = e => {
+    if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+  };
+  const noNativeDrag = e => e.preventDefault();
+
+  carousel.addEventListener('pointerdown', down);
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
+  carousel.addEventListener('click', click, true);
+  carousel.addEventListener('dragstart', noNativeDrag);
+  teardown.push(() => {
+    carousel.removeEventListener('pointerdown', down);
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', up);
+    window.removeEventListener('pointercancel', up);
+    carousel.removeEventListener('click', click, true);
+    carousel.removeEventListener('dragstart', noNativeDrag);
+  });
 
   return () => {
-    document.body.classList.remove('is-navup');
-    teardown.forEach(fn => fn());
+      teardown.forEach(fn => fn());
+    ScrollTrigger.removeEventListener('refresh', onRefresh);
+    document.body.classList.remove('is-navup', 'is-inverted');
+    cards.forEach(c => c.classList.remove('is-far', 'is-edge'));
   };
 }
-
+  

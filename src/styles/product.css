@@ -1,0 +1,227 @@
+/* ============================================================
+   product.css - /p/:id, the product screen.
+
+   Rides on shop.css for the page frame and the "More like this"
+   cards. Cormorant for the name, Urbanist for everything you act on.
+   ============================================================ */
+
+.pdp { padding-bottom: 120px; }
+.pdp__crumbs { padding: 30px var(--gutter) 0; margin-bottom: 22px; }
+.pdp__crumbs a:hover { color: var(--maroon); }
+
+.pdp__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 72px);
+  padding: 0 var(--gutter);
+  align-items: start;
+}
+
+/* ---- picture ------------------------------------------------- */
+.pdp__gallery { position: sticky; top: calc(var(--nav-h) + 20px); }
+.pdp__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--tile-bg);
+  cursor: zoom-in;
+}
+.pdp__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;          /* same ground as the shop grid */
+  transition: transform 0.5s var(--ease-out);
+}
+.pdp__media.is-zoomed img { transform: scale(1.9); }
+.pdp__media.is-broken img { visibility: hidden; }
+
+/* ---- the info column ----------------------------------------- */
+.pdp__info { padding-top: 6px; max-width: 560px; }
+
+.pdp__brand {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.pdp__brand a:hover { opacity: 0.6; }
+.pdp__name {
+  margin: 0 0 24px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(32px, 3vw, 46px);
+  line-height: 1.08;
+}
+
+.pdp__price {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.pdp__now { font-size: 26px; font-weight: 500; }
+.pdp__was { font-size: 16px; color: var(--maroon-38); }
+.pdp__off {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border: 1px solid var(--maroon-38);
+}
+.pdp__checked { margin: 10px 0 0; font-size: 12px; color: var(--maroon-55); }
+
+/* sizes: read-only. In stock = solid square, sold out = faded and
+   struck through. Nothing to click. */
+.pdp__sizes { margin: 34px 0 0; }
+.pdp__sizes-head {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+.pdp__sys { font-weight: 300; color: var(--maroon); }
+.pdp__stock { font-weight: 300; letter-spacing: 0.08em; text-transform: none; font-size: 13px; color: var(--maroon-55); }
+
+.sizes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.size {
+  display: grid;
+  place-items: center;
+  min-width: 54px;
+  height: 46px;
+  padding: 0 10px;
+  font-size: 14px;
+  border: 1px solid var(--maroon-38);
+  color: var(--maroon);
+}
+.size.is-out {
+  color: var(--maroon-38);
+  border-color: var(--maroon-12);
+  background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--maroon-38) 50%, transparent calc(50% + 0.5px));
+}
+
+/* the two actions */
+.pdp__ctas { display: grid; gap: 10px; margin-top: 30px; }
+.pdp__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 58px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.pdp__cta--shop {
+  position: relative;
+  background: var(--maroon);
+  color: var(--bone);
+  padding-right: 58px;               /* room for the arrow box */
+}
+/* the arrow box from the cards, set into the button's right end */
+.pdp__cta-box {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 58px;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid rgba(244, 244, 244, 0.18);
+}
+.pdp__cta-box svg { width: 15px; height: 15px; transform: translate(-2px, 2px); transition: transform 0.45s var(--ease-out); }
+.pdp__cta--shop:hover .pdp__cta-box svg,
+.pdp__cta--shop:focus-visible .pdp__cta-box svg { transform: none; }
+
+.pdp__cta--watch { border: 1px solid var(--maroon); color: var(--maroon); }
+.pdp__cta--watch svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.pdp__cta--watch:hover { background: rgba(90, 26, 36, 0.05); }
+.pdp__cta--watch.is-on svg { fill: currentColor; }
+
+.pdp__small { margin: 16px 0 0; font-size: 12px; line-height: 1.6; color: var(--maroon-55); }
+
+/* ---- price history ------------------------------------------- */
+.ph { margin-top: 46px; padding-top: 26px; border-top: 1px solid var(--maroon-12); }
+.ph__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ph__head h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ph__tag {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  background: var(--maroon);
+  color: var(--bone);
+}
+.ph__sum { margin: 10px 0 14px; font-family: var(--font-body); font-size: 18px; color: var(--maroon-90); }
+
+.ph__chart { position: relative; }
+.ph__chart svg { width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+.ph__grid line { stroke: var(--maroon-12); stroke-width: 1; }
+.ph__grid text,
+.ph__month { font-family: var(--font-sans); font-size: 10.5px; fill: var(--maroon-55); letter-spacing: 0.04em; }
+.ph__area { fill: rgba(90, 26, 36, 0.06); }
+.ph__line { fill: none; stroke: var(--maroon); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ph__dot { fill: var(--maroon); stroke: var(--bone); stroke-width: 2; }
+.ph__now-ring { fill: var(--bone); stroke: var(--maroon); stroke-width: 2; }
+.ph__label { font-family: var(--font-sans); font-size: 11.5px; fill: var(--maroon-55); }
+.ph__label--now { fill: var(--maroon); font-weight: 500; }
+.ph__cross line { stroke: var(--maroon-38); stroke-width: 1; stroke-dasharray: 3 3; }
+.ph__cross circle { fill: var(--maroon); stroke: var(--bone); stroke-width: 2; }
+
+.ph__tip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 14px));   /* sits just above the hovered point */
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  white-space: nowrap;
+  padding: 7px 10px;
+  background: var(--maroon);
+  color: var(--bone);
+  font-size: 12px;
+  pointer-events: none;
+}
+.ph__tip span { opacity: 0.7; letter-spacing: 0.04em; }
+.ph__tip strong { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* ---- more like this ------------------------------------------ */
+.pdp__more { margin-top: 110px; }
+.pdp__more h2 {
+  margin: 0 0 30px;
+  padding: 0 var(--gutter);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-h4);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.pdp__moregrid { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 var(--tile-gap); }
+
+.pdp-missing { padding: calc(var(--nav-h) + 80px) var(--gutter) 160px; text-align: center; }
+.pdp-missing p { margin: 12px 0 28px; font-family: var(--font-body); font-size: var(--fs-lead); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp__media img, .pdp__cta-box svg { transition: none; }
+}
+
+@media (max-width: 1180px) {
+  .pdp__moregrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 860px) {
+  .pdp__layout { grid-template-columns: 1fr; padding: 0; }
+  .pdp__gallery { position: static; }
+  .pdp__info { padding: 0 var(--gutter); max-width: none; }
+  .pdp__media { cursor: auto; }
+  .pdp__media.is-zoomed img { transform: none; }
+  .pdp__more { margin-top: 80px; }
+}

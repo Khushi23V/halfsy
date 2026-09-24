@@ -21,6 +21,8 @@ import { initDrops }    from './beats/drops.js';
 
 import Drops    from './components/Drops.jsx';
 import { initReviews }  from './beats/reviews.js';
+import { initStaples }  from './beats/staples.js';
+import Staples  from './components/Staples.jsx';
 import Reviews  from './components/Reviews.jsx';
 
 
@@ -53,6 +55,7 @@ export default function App() {
         initHero(),
         initStory(),
         initProducts(),
+        initStaples(),
         initReviews(),
         initDrops(),
         initBrands(),
@@ -99,7 +102,7 @@ export default function App() {
         <Hero />
         <Story />
         <Products />
-        
+        <Staples />
         <Drops />
         <Reviews />
         <Brands />
