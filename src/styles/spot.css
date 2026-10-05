@@ -1,15 +1,23 @@
 /* ============================================================
    spot.css - beat 8, the spotlight (landing page).
 
-   Left: one model photograph, edge to edge and a full viewport tall.
-   Right: a heading over four pieces, two by two, on the light ground.
+   Left: one model photograph, edge to edge.
+   Right: a heading over four pieces on the light ground.
 
-   The section is one screen on desktop, so the tiles are sized from
-   the viewport height (--spot-tile) rather than from the column
-   width: on a tall monitor they grow and everything fits under the
-   nav. On a short laptop they stop shrinking at a readable size, the
-   right side runs a little past one screen, and the photograph
-   (sticky) simply waits for it.
+   ON DESKTOP THE WHOLE SECTION IS EXACTLY ONE SCREEN UNDER THE NAV:
+   its height is the viewport's minus the bar's, so with the section's
+   top at the bar's bottom edge, all of it is in view - photograph,
+   heading, four pieces, nothing cut.
+
+   For that to hold on any screen, nothing on the right may have a
+   size of its own. Every part of that column is a variable below -
+   the padding, the heading, the gaps, the caption under each piece -
+   and the pieces get exactly what is left (--spot-tile), capped by
+   what the column's width can take.
+
+   On a tall enough screen the pieces sit two by two. On a short one
+   (700px or less) two rows would leave them stamp-sized, so they go
+   four in a row instead and are sized from the column's width.
    ============================================================ */
 
 .spot {
@@ -17,19 +25,34 @@
   z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: start;
+  align-items: stretch;
   background: var(--bone);
 
-  /* what is left of the screen under the nav after the heading, the
-     two captions and the spacing, split between the two rows */
-  --spot-tile: clamp(172px, calc(40vh - 148px), 400px);
+  --spot-h: calc(100vh - var(--nav-h, 86px));  /* one screen under the nav */
+  height: var(--spot-h);
+  min-height: 360px;
+
+  --spot-pad:  clamp(14px, 3.6vh, 44px);       /* above and below the right column */
+  --spot-head: clamp(24px, min(3.4vw, 5.4vh), 48px);   /* the heading's size */
+  --spot-gap:  clamp(16px, 5.2vh, 64px);       /* heading to the pieces */
+  --spot-row:  clamp(12px, 3.2vh, 38px);       /* between the two rows */
+  --spot-col:  clamp(20px, 4.6vw, 88px);       /* between the two columns */
+  --spot-meta: 76px;                           /* one caption: brand, name, price */
+  --spot-inner: calc(50vw - 2 * var(--gutter));   /* the right column's usable width */
+
+  /* a piece's height: half of what is left of the screen, unless the
+     column is too narrow for two that size side by side */
+  --spot-tile: min(
+    calc((var(--spot-h) - 2 * var(--spot-pad) - 1.1 * var(--spot-head)
+          - var(--spot-gap) - var(--spot-row) - 2 * var(--spot-meta)) / 2),
+    calc((var(--spot-inner) - var(--spot-col)) / 2 * 4 / 3),
+    400px);
 }
 
 /* ---- the photograph ------------------------------------------- */
 .spot__figure {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  position: relative;
+  height: 100%;
   overflow: hidden;                    /* the entrance scales the photo inside it */
   background: var(--tile-bg, #F2F1ED);
 }
@@ -48,23 +71,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(52px, 9vh, 104px);        /* heading to the pieces */
-  min-height: 100vh;
-  /* the nav is fixed over the top of the page: centre in what is left */
-  padding: calc(var(--nav-h, 86px) + clamp(20px, 3vh, 40px)) var(--gutter) clamp(28px, 4.5vh, 56px);
+  gap: var(--spot-gap);
+  min-height: 0;
+  padding: var(--spot-pad) var(--gutter);
 }
 
 .spot__head {
   margin: 0;
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: clamp(30px, 3.4vw, 48px);   /* two steps under the other section heads */
+  font-size: var(--spot-head);
   line-height: 1.1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;                 /* one line: its height is counted on above */
   color: var(--maroon);
   text-align: center;
-  text-wrap: balance;
 }
 
 .spot__grid {
@@ -74,7 +96,7 @@
   display: grid;
   grid-template-columns: repeat(2, auto);
   justify-content: center;
-  gap: clamp(22px, 3.6vh, 40px) clamp(28px, 5vw, 96px);
+  gap: var(--spot-row) var(--spot-col);
 }
 
 .spot__card {
@@ -125,10 +147,20 @@
 .spot__card:hover .spot__arrow,
 .spot__card:focus-visible .spot__arrow { transform: none; }
 
-.spot__meta { display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 14px; }
+/* The caption's three lines have fixed heights that add up to
+   --spot-meta (12 + 16 + 2 + 24 + 2 + 20), so the sum above is exact. */
+.spot__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  height: var(--spot-meta);
+  padding-top: 12px;
+}
 .spot__brand {
   font-family: var(--font-sans);
   font-size: 12px;
+  line-height: 16px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -136,14 +168,14 @@
 .spot__name {
   font-family: var(--font-body);
   font-size: clamp(16px, 1.25vw, 19px);
-  line-height: 1.25;
+  line-height: 24px;
   white-space: nowrap;
 }
 .spot__price {
   display: flex;
   align-items: baseline;
   gap: 9px;
-  margin-top: 3px;
+  line-height: 20px;
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
 }
@@ -156,18 +188,40 @@
 
 /* ---- narrow desktop / tablet: two captions still side by side -- */
 @media (max-width: 1100px) {
-  .spot__grid { column-gap: 26px; }
+  .spot { --spot-col: 26px; }
+}
+
+/* ---- a short desktop screen: four in a row ----------------------
+   One row, so the pieces are sized from the column's width (four of
+   them and three gaps) and from the one caption under them. Names
+   may take two lines here, so the caption is a line taller. */
+@media (min-width: 861px) and (max-height: 700px) {
+  .spot {
+    --spot-col: clamp(10px, 1.3vw, 20px);
+    --spot-meta: 96px;
+    --spot-tile: min(
+      calc(var(--spot-h) - 2 * var(--spot-pad) - 1.1 * var(--spot-head)
+           - var(--spot-gap) - var(--spot-meta)),
+      calc((var(--spot-inner) - 3 * var(--spot-col)) / 4 * 4 / 3),
+      400px);
+  }
+  .spot__grid { grid-template-columns: repeat(4, calc(var(--spot-tile) * 0.75)); }
+  .spot__card { min-width: 0; }
+  .spot__name { font-size: 15px; line-height: 20px; min-height: 40px;   /* two lines, so the prices line up */
+                white-space: normal; text-wrap: balance; }
+  .spot__meta { height: auto; min-height: var(--spot-meta); }
 }
 
 /* ---- phone: photograph, then the heading, then the four -------- */
 @media (max-width: 860px) {
-  .spot { display: block; }
-  .spot__figure { position: relative; height: 78vh; height: 78svh; max-height: 640px; }
-  .spot__body { min-height: 0; padding: 54px var(--gutter) 70px; gap: 52px; }
-  .spot__head { font-size: clamp(28px, 7.8vw, 36px); }
+  .spot { display: block; height: auto; min-height: 0; }
+  .spot__figure { height: 78vh; height: 78svh; max-height: 640px; }
+  .spot__body { padding: 54px var(--gutter) 70px; gap: 52px; }
+  .spot__head { font-size: clamp(28px, 7.8vw, 36px); white-space: normal; text-wrap: balance; }
   .spot__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; width: 100%; }
   .spot__card { min-width: 0; }
   .spot__media { width: 100%; height: auto; aspect-ratio: 3 / 4; }
+  .spot__meta { height: auto; padding-top: 14px; }
   .spot__name { white-space: normal; }
   .spot__arrow { display: none; }
 }

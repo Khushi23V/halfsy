@@ -313,9 +313,9 @@ export const LOOK = {
    ------------------------------------------------------------ */
 export const SPOT = {
   title: 'A season in red',
-  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/250310_DR_CG_HS25_LB_LOOK_41_0025_4c93d02b-e970-412c-9354-5ae4375905b0.jpg?v=1772825307&width=1600',
-  alt: 'Model in a red long-sleeved dress holding a red clutch',
-  focus: '50% 50%',
+  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/241007_DR_CULT_GAIAxKNOX_HO24_LOOK_47_0018_WEB.jpg?v=1729572850',
+  alt: 'Model in a red one-shoulder gown with a cut-out at the waist, holding a gold clutch',
+  focus: '50% 14%',
   pieces: [
     { id: 'top', brand: 'Cult Gaia', name: 'Anita halter top',
       now: '$348', was: '$458', retailer: 'Cult Gaia',
@@ -334,4 +334,100 @@ export const SPOT = {
       href: 'https://www.npeal.com/products/unisex-cashmere-check-scarf-red-grey',
       img: 'https://cdn.shopify.com/s/files/1/0498/3262/4292/files/SS25_NPA108503_R18_2.jpg?v=1741855886&width=1000' }
   ]
+};
+
+/* ------------------------------------------------------------
+   TRIAL - the overlap section (components/Cover.jsx).
+
+   `lead` stays on the page, `tail` crosses onto the photograph.
+   `image` is a vertical model shot from a live listing and `piece`
+   is that listing, credited under the photo. `focus` is the CSS
+   object-position that keeps her in frame when the photo is cropped.
+   `detail` is where the narrow second frame looks on that same photo
+   (a CSS background-position, x then y) - delete the line for a
+   single frame. `head` is the headline's face: 'caps' (Cormorant
+   capitals), 'serif' (Cormorant lowercase) or 'urbanist' (Urbanist
+   light, lowercase). Price as listed on halfsy.shop, 5 Oct 2026.
+   ------------------------------------------------------------ */
+export const COVER = {
+  head: 'caps',
+  lead: 'Luxury for',
+  tail: 'less',
+  note: 'The pieces worth wanting, at the price worth waiting for. We watch the stores worth watching and list each piece the moment its price comes down, with a link straight to the original store.',
+  cta: { label: 'Shop the best deals', href: '/shop' },
+  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/251110_DR_CULT_GAIA_R26_RESHOOTS_59_HANSAL_GOWN_WHITE_0005_WEBBED.jpg?v=1763345911&width=1600',
+  alt: 'Model in an off-white gown with a feathered hem',
+  focus: '50% 15%',
+  detail: '50% 86%',
+  piece: {
+    brand: 'Cult Gaia', name: 'Hansal gown',
+    now: '$2,018', was: '$2,698', retailer: 'Cult Gaia',
+    href: 'https://cultgaia.com/products/hansal-gown-off-white'
+  }
+};
+
+/* ------------------------------------------------------------
+   LANDING IDEA ONE - the full-screen photograph
+   (components/Bleed.jsx).
+
+   `lines` are the two lines of the headline. `image` is a model shot
+   from a live listing and `piece` is that listing, credited beside
+   the button. A tall photo on a wide screen is cropped to a band:
+   `focus` picks the band (CSS object-position, x then y), and
+   `focusPhone` does the same on an upright screen, where the crop is
+   from the sides. `picks` are the small pictures in the top right -
+   three live listings, each linking to its retailer.
+   Prices as listed on halfsy.shop, 6 Oct 2026.
+   ------------------------------------------------------------ */
+export const BLEED = {
+  lines: ['Luxury', 'for less'],
+  note: 'The pieces worth wanting, at the price worth waiting for. Each one links straight to the original store.',
+  cta: { label: 'Shop now', href: '/shop' },
+  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/Frame9.jpg?v=1775775260',
+  alt: 'Model in a rust knit dress lying back on a white lattice lounger beside dark water',
+  focus: '50% 43%',
+  focusPhone: '86% 50%',
+  piece: {
+    brand: 'Cult Gaia', name: 'Kaya knit dress',
+    now: '$598', was: '$798', retailer: 'Cult Gaia',
+    href: 'https://cultgaia.com/products/kaya-cover-up-saddle'
+  },
+  picks: [
+    { id: 'bag', brand: 'Cult Gaia', name: 'Tazia shoulder bag', now: '$418', was: '$558',
+      href: 'https://cultgaia.com/products/tazia-shoulder-toasted-caramel',
+      img: 'https://cdn.shopify.com/s/files/1/0336/7793/files/TAZIA_TC_260123_Cult-Gaia_Product17047copy.jpg?v=1770685713&width=400' },
+    { id: 'sandal', brand: 'Cult Gaia', name: 'Rene sandal', now: '$518', was: '$698',
+      href: 'https://cultgaia.com/products/rene-sandal-cervino',
+      img: 'https://cdn.shopify.com/s/files/1/0336/7793/files/RENESANDAL_CERV_250924_CultGaia__R26-AX__10432_WEBBED_86658a5b-7447-4648-b3d5-e71bb1bd6e37.jpg?v=1762214999&width=400' },
+    { id: 'earring', brand: 'Cult Gaia', name: 'Winnie earrings', now: '$178', was: '$298',
+      href: 'https://cultgaia.com/products/winnie-earring-brushed-brass',
+      img: 'https://cdn.shopify.com/s/files/1/0336/7793/files/WinnieEarringBrushedBrass.jpg?v=1738719002&width=400' }
+  ]
+};
+
+/* ------------------------------------------------------------
+   The three-word section under the opening (components/Trio.jsx).
+
+   `words` run across the top; the last one sits on the far side of
+   the search bar, whose placeholder is `search`. `face` is 'sans'
+   (Urbanist) or 'serif' (Cormorant capitals). `image` is a model shot
+   from a live listing, given WITHOUT a width - the component asks the
+   CDN for the sizes it needs. It is cropped to a wide band: `focus`
+   picks the band (CSS object-position), `focusPhone` the upright crop
+   on a phone. `piece` is that listing (the photo links to it).
+   Price as listed on halfsy.shop, 6 Oct 2026.
+   ------------------------------------------------------------ */
+export const TRIO = {
+  face: 'sans',
+  words: ['Luxury', 'for', 'less'],
+  search: 'Search brands, pieces',
+  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/250903_DR_CG_60_HAISLEY_TOP_LT-GOLD_CHANTEL_SKIRT_GOLD_0040_WEBBED.jpg?v=1760997965',
+  alt: 'Close view of a light gold beaded top worn with gold hoop earrings',
+  focus: '50% 3%',
+  focusPhone: '50% 0%',
+  piece: {
+    brand: 'Cult Gaia', name: 'Haisley top',
+    now: '$968', was: '$1,298', retailer: 'Cult Gaia',
+    href: 'https://cultgaia.com/products/haisley-top-light-gold'
+  }
 };

@@ -2,10 +2,10 @@ import { SPOT } from '../data/assets.js';
 
 /* BEAT 8. The spotlight - one category, in season.
 
-   Half the screen is a single model photograph, a full viewport tall;
-   the other half is a heading over four pieces from that category,
-   two by two, each one a link to the retailer. Nothing else: no
-   eyebrow, no copy, no panel.
+   Half the screen is a single model photograph; the other half is a
+   heading over four pieces from that category, each one a link to the
+   retailer. Nothing else: no eyebrow, no copy, no panel. On desktop
+   the whole section is exactly one screen under the nav (spot.css).
 
    Sits straight after Get the look and mirrors it - there the model
    is on the right, here she is on the left.

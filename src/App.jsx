@@ -22,14 +22,32 @@ import { initLook }     from './beats/look.js';
 import Look     from './components/Look.jsx';
 import { initSpot }     from './beats/spot.js';
 import Spot     from './components/Spot.jsx';
+import { initCover }    from './beats/cover.js';
+import Cover    from './components/Cover.jsx';
+import { initBleed }    from './beats/bleed.js';
+import Bleed    from './components/Bleed.jsx';
+import { initTrio }     from './beats/trio.js';
+import Trio     from './components/Trio.jsx';
+import { initAbout }    from './beats/about.js';
+import About    from './components/About.jsx';
 import { initReviews }  from './beats/reviews.js';
 import { initStaples }  from './beats/staples.js';
 import Staples  from './components/Staples.jsx';
 import Reviews  from './components/Reviews.jsx';
 
 
-export default function App() {
+/* variant - which opening the page has:
+     'bleed'   the full-screen photograph (Bleed), then the three-word
+               section (Trio), the about circle (About) and the image
+               section (Story)
+     'cover'   the overlap headline (Cover)
+     'classic' the first one (Hero, then Story)
+   Everything from the product row down is the same page in all three.
+   Chosen by the URL in main.jsx. */
+export default function App({ variant = 'bleed' }) {
   const root = useRef(null);
+  const classic = variant === 'classic';
+  const cover = variant === 'cover';
 
   /* useLayoutEffect, not useEffect: the beats measure geometry
      (offsetTop, offsetHeight, scrollWidth) and pin against it. Running
@@ -54,8 +72,10 @@ export default function App() {
            hero's intro waits on, so it has to exist before the hero
            asks for it */
         initLoader(),
-        initHero(),
-        initStory(),
+        /* the opening */
+        ...(classic ? [initHero(), initStory()]
+          : cover ? [initCover({ landing: true })]
+          : [initBleed(), initTrio(), initAbout(), initStory()]),
         initProducts(),
         initStaples(),
         initReviews(),
@@ -94,7 +114,9 @@ export default function App() {
   }, []);
 
   return (
-    <div ref={root}>
+    /* "textured" = grain + soft light on the light sections (styles/paper.css);
+       take the class off to go back to the flat background */
+    <div ref={root} className={'textured' + (classic ? '' : cover ? ' landing-cover' : ' landing-bleed')}>
       <Loader />
 
       <a className="skip-link" href="#beat-products">Skip to the edit</a>
@@ -102,8 +124,13 @@ export default function App() {
       <Nav />
 
       <main className="main">
-        <Hero />
-        <Story />
+        {classic ? <><Hero /><Story /></> : cover ? <Cover landing />
+          : <>
+              <Bleed />
+              <Trio />     {/* the three-word section, on trial under the opening */}
+              <About />    {/* the burgundy circle and the about text */}
+              <Story />    {/* the image section */}
+            </>}
         <Products />
         <Staples />
         <Look />

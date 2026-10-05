@@ -1,0 +1,25 @@
+/* ============================================================
+   cinzel-trial.css - TRIAL (5 Oct): Cinzel wherever the site used
+   Cormorant Garamond.
+
+   Every serif on the site reads from --font-body, so the swap is the
+   one line below. To go back to Cormorant, delete the import of this
+   file in main.jsx - nothing else was changed. (Both fonts are loaded
+   in index.html while the trial runs; drop whichever loses.)
+
+   Two things to know about Cinzel:
+   - it has capitals only. Its "lowercase" are small capitals, so
+     product names, brand names and the manifesto all read in caps;
+   - it is about a fifth wider than Cormorant, and has no italic.
+
+   The rules under the font line are the few places that extra width
+   broke a layout.
+   ============================================================ */
+
+:root { --font-body: 'Cinzel', Georgia, serif; }
+
+/* "The Slouchy Hobo" no longer fitted on one line under its picture */
+.staple__trend { font-size: clamp(14px, 1.2vw, 20px); letter-spacing: 0.04em; }
+
+/* "Get the look" outgrew its 440px column and sat off-centre */
+.look__intro { max-width: 560px; }

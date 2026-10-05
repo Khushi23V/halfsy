@@ -1,0 +1,102 @@
+/* ============================================================
+   about.css - the about beat: the burgundy circle and its text
+   (components/About.jsx, beats/about.js).
+
+   The stage is one screen, pinned, and CLEAR - it has no ground of
+   its own. The circle is the only thing in it at first, so whatever
+   section came before is what the circle grows over.
+
+   For that to work the pin has to start while the section before is
+   still on screen, so this section is pulled up over that section's
+   last screenful (margin-top). It lets pointer events through, so
+   links and fields under it go on working.
+
+   That earlier section goes on scrolling up while the circle swells,
+   and what would show beneath its bottom edge is the bare page. The
+   ::before below is a sheet of the same paper laid there instead, so
+   the ground carries on unbroken until the circle has covered it.
+
+   The section's height is its scroll budget (--beat-about, in
+   screen-heights, tokens.css); the pin runs one screen past it, which
+   is the overlap the image section after it is built to expect.
+   ============================================================ */
+
+.about {
+  position: relative;
+  z-index: 2;                                  /* with the section before it; later in the page, so above it */
+  height: calc(var(--beat-about) * 1vh);
+  margin-top: -100vh;
+  pointer-events: none;
+}
+.about::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 100vh;                                  /* exactly where the section before ends */
+  height: 100vh;
+  background-color: var(--bone);
+}
+.textured .about::before {
+  background-image: var(--paper-noise);
+  background-size: 240px 240px;
+}
+
+.about__stage { background: none; }
+
+/* the circle */
+.about__fill {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--maroon);
+  clip-path: circle(0% at 50% 130%);
+  will-change: clip-path;
+}
+
+/* the text. One paragraph at one size - a held thought, not a
+   heading and a sub. */
+.about__copy {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: min(880px, 84vw);
+  text-align: center;
+  will-change: opacity;
+}
+.about__copy p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(19px, 2vw, 30px);
+  line-height: 1.5;
+  color: var(--bone);
+}
+
+/* the image: a small window that rises, rests, and opens */
+.about__media {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  clip-path: inset(38% 42% round 2px);
+  will-change: transform, clip-path;
+}
+.about__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* The image section pins the moment this one lets go, showing the
+   same image at the same size. It has to be above this section to
+   take over cleanly, and this section sits at z-index 2. */
+.landing-bleed .story { z-index: 2; }
+
+/* ---- no motion: a plain burgundy block with the text. The image
+   section follows with the same image, so this one's is left out. */
+@media (prefers-reduced-motion: reduce) {
+  .about { height: auto; margin-top: 0; pointer-events: auto; }
+  .about::before { display: none; }
+  .about__stage { height: auto; background: var(--maroon); }
+  .about__fill { display: none; }
+  .about__copy { position: relative; left: auto; top: auto; transform: none;
+                 padding: 110px 0; margin: 0 auto; }
+  .about__media { display: none; }
+}

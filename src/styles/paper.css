@@ -1,0 +1,70 @@
+/* ============================================================
+   paper.css - TRIAL: a little tooth and light for the landing page.
+
+   The light sections were one flat grey. This lays two things over
+   that same colour, and nothing else changes:
+
+   1. Grain - a fine paper noise, drawn by a 400-byte SVG filter and
+      tiled. It is a background layer of each section, not an overlay
+      on the page, so photographs and product tiles stay clean and
+      there is nothing extra to composite while scrolling.
+   2. Light - one soft warm pool per section, alternating sides, and
+      a faint burgundy blush opposite it. Both fade out well inside
+      the section, so two sections never meet on a visible seam.
+
+   One switch: the `textured` class on the root <div> in App.jsx. Remove
+   the class (or this import) and the page is flat again.
+
+   To tune: --paper-warm and --paper-blush are the two light colours.
+   The grain's strength is the last row of the SVG's feColorMatrix
+   ("0.45 0 0 0 -0.195"): raise the first number for more contrast,
+   make the last one more negative for a sparser grain.
+   ============================================================ */
+
+.textured {
+  --paper-warm: rgba(200, 172, 138, 0.26);
+  --paper-blush: rgba(90, 26, 36, 0.035);
+
+  --paper-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.12 0 0 0 0 0.1 0.45 0 0 0 -0.195'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.textured .hero .stage,
+.textured .products,
+.textured .staples,
+.textured .cover,
+.textured .trio,
+.textured .look,
+.textured .spot,
+.textured .reviews,
+.textured .brands__stage {
+  background-image:
+    var(--paper-noise),
+    radial-gradient(64% 54% at var(--paper-x, 80%) var(--paper-y, 46%), var(--paper-warm), transparent 76%),
+    radial-gradient(56% 50% at calc(100% - var(--paper-x, 80%)) 56%, var(--paper-blush), transparent 76%);
+  background-size: 240px 240px, 100% 100%, 100% 100%;
+  background-repeat: repeat, no-repeat, no-repeat;
+}
+
+/* The opening gets a sheen instead of a pool: a band of light falling
+   across it on the diagonal, over a warm wash that deepens toward the
+   corners - the effect from the Riad reference, turned for a light
+   page. The last layer under the grain fades everything back to the
+   plain ground at the bottom, so the next section meets it cleanly.
+   --sheen is the band's strength, --sheen-wash the tone it cuts through. */
+.textured .cover {
+  --sheen: rgba(255, 255, 255, 0.85);
+  --sheen-wash: rgba(196, 168, 136, 0.34);
+  background-image:
+    var(--paper-noise),
+    linear-gradient(to bottom, transparent 68%, var(--bone) 100%),
+    linear-gradient(114deg, transparent 26%, var(--sheen) 43%, transparent 60%),
+    linear-gradient(114deg, var(--sheen-wash) 0%, rgba(196, 168, 136, 0.14) 46%, rgba(90, 26, 36, 0.07) 100%);
+  background-size: 240px 240px, 100% 100%, 100% 100%, 100% 100%;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+}
+
+/* the light changes side from one section to the next */
+.textured .products,
+.textured .look,
+.textured .reviews { --paper-x: 22%; }
+.textured .hero .stage { --paper-x: 50%; --paper-y: 40%; }

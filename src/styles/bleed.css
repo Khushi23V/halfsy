@@ -1,0 +1,225 @@
+/* ============================================================
+   bleed.css - landing idea one: the full-screen photograph
+   (components/Bleed.jsx).
+
+   One picture, edge to edge, exactly one screen tall. On it:
+     bottom left  - the headline
+     bottom right - the button, with the credit beside it
+     top right    - small product pictures over a short note
+
+   The layout is a three-row grid laid over the picture: the corner
+   block sits in the first row, the last row holds the headline and
+   the button, and the row between them takes whatever is left - so on
+   a short screen the two simply come closer, they never overlap.
+
+   Light type needs dark under it, and no photograph is dark exactly
+   where the type happens to be. Shades are painted over the picture
+   for that - one down from the top (the nav) with a deeper pool in
+   the top right corner (the corner block), one up from the bottom
+   (the headline, the button). They are the two --bleed-shade values
+   below; turn them down for a darker photograph, up for a paler one.
+   ============================================================ */
+
+.bleed {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  height: 100svh;
+  min-height: 480px;
+  overflow: hidden;
+  background: #14181a;                         /* what shows before the picture has loaded */
+  color: var(--bone);
+
+  --bleed-fs: clamp(52px, min(8.6vw, 19vh), 176px);   /* the headline */
+  --bleed-shade-top: 0.5;
+  --bleed-shade-foot: 0.74;
+  --bleed-pick: clamp(64px, 6vw, 96px);        /* one small picture's width */
+}
+
+/* ---- the photograph ------------------------------------------- */
+.bleed__media {
+  position: absolute;
+  inset: 0;
+}
+.bleed__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--bleed-focus, 50% 50%);
+  user-select: none;
+}
+/* the two shades */
+.bleed__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 62% at 100% 0%, rgba(8, 12, 14, var(--bleed-shade-top)) 0%, rgba(8, 12, 14, 0) 100%),
+    linear-gradient(to bottom, rgba(8, 12, 14, var(--bleed-shade-top)) 0%, rgba(8, 12, 14, 0) 34%),
+    linear-gradient(to top, rgba(10, 9, 8, var(--bleed-shade-foot)) 0%, rgba(10, 9, 8, 0.3) 30%, rgba(10, 9, 8, 0) 58%);
+}
+/* the same grain as the light sections, so the picture belongs to
+   the same paper (only when the page has the "textured" class) */
+.textured .bleed__media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: var(--paper-noise);
+  opacity: 0.55;
+}
+
+/* ---- the three corners ---------------------------------------- */
+.bleed__inner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(16px, 1fr) auto;
+  padding: calc(var(--nav-h, 86px) + clamp(10px, 3.4vh, 40px)) var(--gutter) clamp(26px, 5vh, 52px);
+}
+
+/* top right: small pictures, then the note */
+.bleed__aside {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: calc(var(--bleed-pick) * 3 + 20px);   /* exactly the row of pictures */
+  position: relative;
+  isolation: isolate;
+}
+/* On a short, wide screen the picture's pale parts can end up under
+   this corner. A soft pool of shade travels with the block: nothing
+   to see over dark water, and enough to read by over anything pale. */
+.bleed__aside::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -34% -30% -46% -38%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(8, 12, 14, 0.62) 0%, rgba(8, 12, 14, 0.5) 45%, rgba(8, 12, 14, 0) 100%);
+}
+.bleed__picks {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bleed__picks li { flex: 0 0 var(--bleed-pick); }
+.bleed__pick {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--tile-bg, #F2F1ED);
+}
+.bleed__pick img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-out);
+}
+.bleed__pick:hover img,
+.bleed__pick:focus-visible img { transform: scale(1.07); }
+.bleed__pick:focus-visible { outline: 1px solid var(--bone); outline-offset: 4px; }
+
+.bleed__note {
+  margin: clamp(12px, 1.3vw, 20px) 0 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(15px, 1.22vw, 19px);
+  line-height: 1.42;
+  text-wrap: pretty;
+  text-shadow: 0 1px 20px rgba(8, 12, 14, 0.6);   /* holds where a line crosses something pale */
+}
+
+/* bottom left: the headline */
+.bleed__head {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+  margin: 0 0 -0.09em;                         /* capitals have no descenders: sit on the baseline */
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--bleed-fs);
+  line-height: 0.9;
+  letter-spacing: 0.012em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bleed__line { display: block; }
+
+/* bottom right: the credit, then the button */
+.bleed__foot {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2vw, 34px);
+}
+.bleed__credit {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--bone);
+}
+.bleed__brand { font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+.bleed__name { opacity: 0.8; }
+.bleed__price { display: flex; align-items: baseline; gap: 7px; font-variant-numeric: tabular-nums; }
+.bleed__now { font-weight: 500; }
+.bleed__price s { opacity: 0.6; }
+.bleed__credit:hover .bleed__name,
+.bleed__credit:focus-visible .bleed__name { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.bleed__credit:focus-visible { outline: 1px solid var(--bone); outline-offset: 6px; }
+.bleed__cta:focus-visible { outline: 1px solid var(--bone); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bleed__pick img { transition: none; }
+}
+
+/* ---- narrower than a laptop: the credit goes above the button --- */
+@media (max-width: 1100px) {
+  .bleed__foot { flex-direction: column; align-items: flex-end; gap: 14px; }
+}
+
+/* ---- phone ------------------------------------------------------
+   An upright screen crops the picture from its sides, so it gets its
+   own focus. The corner block moves to the top left under the nav;
+   the headline and the button stack at the foot. */
+@media (max-width: 860px) {
+  .bleed {
+    --bleed-fs: clamp(46px, 15.6vw, 92px);
+    --bleed-pick: clamp(54px, 17vw, 78px);
+    --bleed-shade-top: 0.58;
+    --bleed-shade-foot: 0.8;
+  }
+  .bleed__media img { object-position: var(--bleed-focus-phone, 50% 50%); }
+  .bleed__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(16px, 1fr) auto auto;
+    padding: 92px var(--gutter) 34px;
+  }
+  .bleed__aside { grid-column: 1; justify-self: start; }
+  .bleed__picks { gap: 8px; }
+  .bleed__aside { width: calc(var(--bleed-pick) * 3 + 16px); min-width: 230px; }
+  .bleed__head { grid-row: 3; }
+  .bleed__foot {
+    grid-column: 1;
+    grid-row: 4;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 26px;
+  }
+  .bleed__credit { flex-wrap: wrap; row-gap: 4px; white-space: normal; order: 2; justify-content: flex-end; text-align: right; }
+  .bleed__cta { order: 1; flex: 0 0 auto; }
+}

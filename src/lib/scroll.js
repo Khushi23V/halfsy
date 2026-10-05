@@ -61,6 +61,7 @@ export function destroyScroll() {
    files never pass their own budget and cannot fall out of sync. */
 const BUDGETS = {
   'beat-hero':    '--beat-hero',
+  'beat-about':   '--beat-about',
   'beat-story':   '--beat-image',
   'beat-brands':  '--beat-brands'
 };

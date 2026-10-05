@@ -1,0 +1,293 @@
+/* ============================================================
+   cover.css - the overlap opening (components/Cover.jsx).
+
+   A headline on the left whose last word crosses onto a vertical
+   photograph on the right. It is the first screen of the new landing
+   page (`/`); the earlier landing page is kept at `/classic`.
+
+   How the overlap is held without JS: a two-column grid whose first
+   column is max-content - exactly the width of "Luxury for". The
+   heading is a subgrid across both columns, so "less" sits at the
+   start of column two; the photograph is in column two as well,
+   pushed in by half a letter-height (--cover-bite), so its edge cuts
+   the word after its first letter. Change the font or the width and
+   the cut stays where it is.
+
+   Why the photo is sized from the screen's WIDTH: the headline is,
+   so the two always keep the same proportion - on a short, wide
+   laptop the word still stops at her arm instead of running across
+   her. Only the photo's height gives way on a short screen (it is
+   cropped from below), never its width.
+   ============================================================ */
+
+.cover {
+  position: relative;
+  z-index: 2;
+  background: var(--bone);
+  padding: 0 var(--gutter);
+
+  --cover-fs: clamp(40px, 6.2vw, 136px);       /* the headline */
+  --cover-ink: var(--maroon);                  /* type on the page */
+  --cover-on: #fff;                            /* the same type where it lies on the photograph */
+  --cover-bite: calc(var(--cover-fs) * 0.5);   /* how far "less" runs before the photo starts */
+  --cover-gap: clamp(8px, 1vw, 18px);          /* between the two frames */
+  --cover-w: 33vw;                             /* the photograph's width */
+  --cover-h: min(calc(100vh - var(--nav-h, 86px) - 124px),
+                 calc(var(--cover-w) * 4 / 3));
+}
+
+.cover__inner {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-rows: 0.8fr auto auto 1.2fr;   /* the type sits a little above the middle */
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--nav-h, 86px) + 24px) 0 40px;
+}
+
+/* ---- the headline --------------------------------------------- */
+.cover__head {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin: 0;
+  position: relative;
+  z-index: 2;                                  /* over the photograph */
+  pointer-events: none;                        /* the photo under it stays a link */
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--cover-fs);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--cover-ink);
+}
+.cover__lead { grid-column: 1; padding-right: 0.26em; }   /* the word space */
+.cover__tail { grid-column: 2; justify-self: start; }
+
+/* browsers without subgrid: the spans become the grid items themselves */
+@supports not (grid-template-columns: subgrid) {
+  .cover__head { display: contents; }
+  .cover__lead, .cover__tail {
+    grid-row: 2;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+    font-family: var(--font-body);
+    font-size: var(--cover-fs);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--maroon);
+  }
+}
+
+/* ---- headline faces --------------------------------------------
+   Three settings of the same line (Cover.jsx picks one). Lowercase is
+   much narrower than capitals, so each face has its own size - chosen
+   so that "Luxury for", the photograph and the narrow frame still
+   fill the row from gutter to gutter. */
+.cover--serif {
+  --cover-fs: clamp(48px, 9.5vw, 206px);
+  --cover-bite: calc(var(--cover-fs) * 0.34);
+}
+.cover--serif .cover__head {
+  text-transform: none;
+  letter-spacing: -0.012em;
+  line-height: 0.9;
+}
+.cover--urbanist {
+  --cover-fs: clamp(44px, 9.3vw, 200px);
+  --cover-bite: calc(var(--cover-fs) * 0.5);
+}
+.cover--urbanist .cover__head {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  text-transform: none;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+
+/* ---- two inks --------------------------------------------------
+   Dark on the page, light on the photograph, cut at the photograph's
+   edge. The glyphs are transparent and show a background through:
+   the dark ink everywhere, plus one light rectangle exactly where the
+   photo is (Cover.jsx measures it into --split-x/y/w/h). Without
+   background-clip the type simply stays dark. */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .cover [data-split] {
+    background-color: var(--split-ink, var(--cover-ink));
+    background-image: linear-gradient(var(--cover-on), var(--cover-on));
+    background-repeat: no-repeat;
+    background-position: var(--split-x, 200vw) var(--split-y, 0);
+    background-size: var(--split-w, 0) var(--split-h, 0);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* ---- note + button -------------------------------------------- */
+/* The note is as wide as the first column plus a little of the
+   photograph, so each full line runs a word onto the picture, as the
+   headline does. width:0 + min-width keeps it from widening that
+   column (which must stay exactly "Luxury for" wide). */
+.cover__copy {
+  grid-column: 1;
+  grid-row: 3;
+  position: relative;
+  z-index: 2;
+  width: 0;
+  min-width: calc(100% + var(--cover-bite) + 4.5em);
+  margin-top: clamp(18px, 2.4vw, 40px);
+  pointer-events: none;                        /* the photo under its end stays a link... */
+}
+.cover__cta { pointer-events: auto; }          /* ...the button is still a button */
+.cover__note {
+  --split-ink: var(--ink-65);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(16px, 1.3vw, 21px);
+  line-height: 1.5;
+  color: var(--ink-65);
+  text-wrap: pretty;                           /* no one-word last line */
+}
+.cover__cta { margin-top: clamp(20px, 2.2vw, 34px); }
+
+/* ---- the photograph ------------------------------------------- */
+.cover__figure {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: center;
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0 var(--cover-bite);
+}
+.cover__frames {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cover-gap);
+}
+.cover__main { flex: 0 0 auto; width: var(--cover-w); }
+.cover__link { display: block; color: var(--ink); }
+.cover__link:focus-visible { outline: 1px solid var(--ink); outline-offset: 8px; }
+
+.cover__media {
+  position: relative;
+  display: block;
+  height: var(--cover-h);
+  overflow: hidden;
+  background: var(--tile-bg, #F2F1ED);
+}
+.cover__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;                           /* object-position comes from COVER.focus */
+  user-select: none;
+}
+/* The photograph is pale where the type crosses it, and light type
+   needs something to stand on: a shade that is deepest at that edge
+   and gone before it reaches her. */
+.cover__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(58, 38, 28, 0.46) 0%, rgba(58, 38, 28, 0.24) 22%, transparent 46%);
+}
+
+/* the narrow frame: the same photograph, enlarged, looking at the
+   place COVER.detail points to */
+.cover__detail {
+  flex: 0 0 auto;
+  width: calc(var(--cover-w) * 0.4);
+  height: var(--cover-h);
+  background-color: var(--tile-bg, #F2F1ED);
+  background-repeat: no-repeat;
+  background-size: 620% auto;
+}
+
+/* the arrow box, as on every other product image */
+.cover__arrow {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 44px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--bone);
+  transform: translateY(105%);
+  transition: transform 0.5s var(--ease-out);
+  z-index: 1;                                  /* over the shade */
+}
+.cover__arrow svg { width: 15px; height: 15px; }
+.cover__link:hover .cover__arrow,
+.cover__link:focus-visible .cover__arrow { transform: none; }
+
+/* the credit: what she is wearing and what it costs today */
+.cover__credit {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: max-content;                          /* on a phone it may run on under the narrow frame */
+  min-width: 100%;
+  margin: 0;
+  padding-top: 14px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.cover__brand { font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+.cover__name { color: var(--ink-65); }
+.cover__price { display: flex; align-items: baseline; gap: 8px; margin-left: auto; font-variant-numeric: tabular-nums; }
+.cover__now { font-weight: 500; }
+.cover__price s { color: var(--ink-38); }
+
+/* ---- when it opens the page ------------------------------------
+   The product row used to roll up over the dark image beat, with
+   rounded shoulders and a 40px overlap. After this light opening it
+   simply follows. */
+.landing-cover .products { margin-top: 0; border-radius: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cover__arrow { transition: none; }
+}
+
+/* ---- phone: two lines of type, the second one on the picture ----
+   "Luxury for" on the page, "less" dropped onto the top of the
+   photograph; the two frames fill the width; note and button
+   underneath. Here the frames are sized from the width they have,
+   so the figure is a size container. */
+@media (max-width: 860px) {
+  .cover { --cover-fs: clamp(40px, 12.4vw, 76px); }
+  .cover--serif    { --cover-fs: clamp(48px, 18.5vw, 104px); }
+  .cover--urbanist { --cover-fs: clamp(44px, 16.5vw, 96px); }
+  .cover__inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 96px 0 70px;
+  }
+  .cover__head { display: block; line-height: 1.04; }
+  .cover__lead, .cover__tail { display: block; padding: 0; }
+  .cover__figure {
+    order: 2;
+    width: 100%;
+    margin: calc(var(--cover-fs) * -0.56) 0 0;   /* half of "less" over the photo */
+    container-type: inline-size;
+  }
+  .cover__frames {
+    --cover-w: calc((100cqw - var(--cover-gap)) / 1.4);
+    --cover-h: calc(var(--cover-w) * 4 / 3);
+  }
+  .cover__arrow { display: none; }
+  .cover__copy { order: 3; width: auto; min-width: 0; margin-top: 34px; }
+  /* on a phone the type sits on the photo's top edge, so the shade comes down from there */
+  .cover__media::after { background: linear-gradient(180deg, rgba(58, 38, 28, 0.42) 0%, transparent 30%); }
+}
