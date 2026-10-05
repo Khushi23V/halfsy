@@ -7,7 +7,7 @@
 
 .pdp { padding-bottom: 120px; }
 .pdp__crumbs { padding: 30px var(--gutter) 0; margin-bottom: 22px; }
-.pdp__crumbs a:hover { color: var(--maroon); }
+.pdp__crumbs a:hover { color: var(--ink); }
 
 .pdp__layout {
   display: grid;
@@ -62,14 +62,14 @@
   font-variant-numeric: tabular-nums;
 }
 .pdp__now { font-size: 26px; font-weight: 500; }
-.pdp__was { font-size: 16px; color: var(--maroon-38); }
+.pdp__was { font-size: 16px; color: var(--ink-38); }
 .pdp__off {
   font-size: 12px;
   letter-spacing: 0.08em;
   padding: 4px 8px;
-  border: 1px solid var(--maroon-38);
+  border: 1px solid var(--ink-38);
 }
-.pdp__checked { margin: 10px 0 0; font-size: 12px; color: var(--maroon-55); }
+.pdp__checked { margin: 10px 0 0; font-size: 12px; color: var(--ink-55); }
 
 /* sizes: read-only. In stock = solid square, sold out = faded and
    struck through. Nothing to click. */
@@ -82,10 +82,10 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--maroon);
+  color: var(--ink);
 }
-.pdp__sys { font-weight: 300; color: var(--maroon); }
-.pdp__stock { font-weight: 300; letter-spacing: 0.08em; text-transform: none; font-size: 13px; color: var(--maroon-55); }
+.pdp__sys { font-weight: 300; color: var(--ink); }
+.pdp__stock { font-weight: 300; letter-spacing: 0.08em; text-transform: none; font-size: 13px; color: var(--ink-55); }
 
 .sizes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .size {
@@ -95,13 +95,13 @@
   height: 46px;
   padding: 0 10px;
   font-size: 14px;
-  border: 1px solid var(--maroon-38);
-  color: var(--maroon);
+  border: 1px solid var(--ink-38);
+  color: var(--ink);
 }
 .size.is-out {
-  color: var(--maroon-38);
-  border-color: var(--maroon-12);
-  background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--maroon-38) 50%, transparent calc(50% + 0.5px));
+  color: var(--ink-38);
+  border-color: var(--ink-12);
+  background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--ink-38) 50%, transparent calc(50% + 0.5px));
 }
 
 /* the two actions */
@@ -141,10 +141,10 @@
 .pdp__cta--watch:hover { background: rgba(90, 26, 36, 0.05); }
 .pdp__cta--watch.is-on svg { fill: currentColor; }
 
-.pdp__small { margin: 16px 0 0; font-size: 12px; line-height: 1.6; color: var(--maroon-55); }
+.pdp__small { margin: 16px 0 0; font-size: 12px; line-height: 1.6; color: var(--ink-55); }
 
 /* ---- price history ------------------------------------------- */
-.ph { margin-top: 46px; padding-top: 26px; border-top: 1px solid var(--maroon-12); }
+.ph { margin-top: 46px; padding-top: 26px; border-top: 1px solid var(--ink-12); }
 .ph__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .ph__head h2 {
   margin: 0;
@@ -158,24 +158,24 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 5px 9px;
-  background: var(--maroon);
+  background: var(--ink);
   color: var(--bone);
 }
-.ph__sum { margin: 10px 0 14px; font-family: var(--font-body); font-size: 18px; color: var(--maroon-90); }
+.ph__sum { margin: 10px 0 14px; font-family: var(--font-body); font-size: 18px; color: var(--ink-90); }
 
 .ph__chart { position: relative; }
 .ph__chart svg { width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
-.ph__grid line { stroke: var(--maroon-12); stroke-width: 1; }
+.ph__grid line { stroke: var(--ink-12); stroke-width: 1; }
 .ph__grid text,
-.ph__month { font-family: var(--font-sans); font-size: 10.5px; fill: var(--maroon-55); letter-spacing: 0.04em; }
-.ph__area { fill: rgba(90, 26, 36, 0.06); }
-.ph__line { fill: none; stroke: var(--maroon); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-.ph__dot { fill: var(--maroon); stroke: var(--bone); stroke-width: 2; }
-.ph__now-ring { fill: var(--bone); stroke: var(--maroon); stroke-width: 2; }
-.ph__label { font-family: var(--font-sans); font-size: 11.5px; fill: var(--maroon-55); }
-.ph__label--now { fill: var(--maroon); font-weight: 500; }
-.ph__cross line { stroke: var(--maroon-38); stroke-width: 1; stroke-dasharray: 3 3; }
-.ph__cross circle { fill: var(--maroon); stroke: var(--bone); stroke-width: 2; }
+.ph__month { font-family: var(--font-sans); font-size: 10.5px; fill: var(--ink-55); letter-spacing: 0.04em; }
+.ph__area { fill: rgba(0, 0, 0, 0.06); }
+.ph__line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ph__dot { fill: var(--ink); stroke: var(--bone); stroke-width: 2; }
+.ph__now-ring { fill: var(--bone); stroke: var(--ink); stroke-width: 2; }
+.ph__label { font-family: var(--font-sans); font-size: 11.5px; fill: var(--ink-55); }
+.ph__label--now { fill: var(--ink); font-weight: 500; }
+.ph__cross line { stroke: var(--ink-38); stroke-width: 1; stroke-dasharray: 3 3; }
+.ph__cross circle { fill: var(--ink); stroke: var(--bone); stroke-width: 2; }
 
 .ph__tip {
   position: absolute;
@@ -185,7 +185,7 @@
   align-items: baseline;
   white-space: nowrap;
   padding: 7px 10px;
-  background: var(--maroon);
+  background: var(--ink);
   color: var(--bone);
   font-size: 12px;
   pointer-events: none;

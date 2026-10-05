@@ -1,0 +1,252 @@
+/* ============================================================
+   look.css - beat 7, "Get the look" (landing page).
+
+   Two halves on the light ground: a stage (the heading, or the piece
+   you pointed at) and the model with a dot on each piece. Kept
+   minimal - no panels, no borders; the only drawn thing is the line.
+   ============================================================ */
+
+.look {
+  position: relative;
+  z-index: 2;
+  background: var(--bone);
+  padding: clamp(70px, 8vw, 120px) var(--gutter);
+}
+
+.look__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 80px);
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* ---- the stage: heading and card share one cell --------------- */
+/* The model is a full screen tall, so the stage rides along with the
+   scroll (sticky, centred in the space under the nav): whichever dot
+   you reach, the heading or the piece is on screen beside it. */
+.look__stage {
+  position: sticky;
+  top: var(--nav-h, 86px);
+  display: grid;
+  place-items: center;
+  height: calc(100vh - var(--nav-h, 86px));
+  max-height: clamp(620px, 100vh, 1000px);   /* never taller than the model */
+}
+.look__intro,
+.look__card {
+  grid-area: 1 / 1;
+  transition: opacity 0.45s var(--ease-out), transform 0.6s var(--ease-out), visibility 0s linear 0.45s;
+}
+
+.look__intro { text-align: center; max-width: 440px; }
+.look__inner.is-active .look__intro { opacity: 0; transform: translateY(-10px); visibility: hidden; }
+
+.look__head {
+  margin: 0 0 clamp(16px, 1.6vw, 22px);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-h2);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  white-space: nowrap;
+}
+.look__note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink-55);
+}
+
+/* the piece */
+.look__card {
+  display: flex;
+  flex-direction: column;
+  width: clamp(220px, 23vw, 310px);
+  color: var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+.look__inner.is-active .look__card {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0.08s, 0.08s, 0s;
+}
+.look__card:focus-visible { outline: 1px solid var(--ink); outline-offset: 8px; }
+
+.look__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #F2F1ED;                 /* same ground as the shop cards */
+}
+.look__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  animation: look-in 0.5s var(--ease-out);
+}
+.look__media.is-broken img { visibility: hidden; }
+@keyframes look-in { from { opacity: 0; transform: scale(1.03); } }
+
+/* the arrow box, as on the shop cards */
+.look__arrow {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 44px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--bone);
+  transform: translateY(105%);
+  transition: transform 0.5s var(--ease-out);
+}
+.look__arrow svg { width: 15px; height: 15px; }
+.look__card:hover .look__arrow,
+.look__card:focus-visible .look__arrow { transform: none; }
+
+.look__meta { display: flex; flex-direction: column; gap: 3px; padding-top: 16px; }
+.look__brand {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.look__name { font-family: var(--font-body); font-size: clamp(18px, 1.5vw, 22px); line-height: 1.25; }
+.look__price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 5px;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+.look__now { font-size: 15px; font-weight: 500; }
+.look__price s { font-size: 13px; color: var(--ink-38); }
+
+/* ---- the model and her dots ------------------------------------ */
+.look__figure {
+  position: relative;
+  justify-self: center;
+  height: clamp(620px, 100vh, 1000px);
+  /* aspect-ratio comes from LOOK.ratio, so the box is exactly the
+     image and the dots' percentages land on the garments */
+}
+.look__model { width: 100%; height: 100%; object-fit: contain; user-select: none; }
+
+/* A 34px hit area around a 12px dot. Positioned by left/top with
+   negative margins (not a transform), so GSAP and the hover scale
+   are free to use transform on the inner span. */
+.look__dot {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.look__dot > span {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--maroon);
+  box-shadow: 0 0 0 2px var(--bone);
+}
+/* a slow ring, so the dots read as "press me" without shouting */
+.look__dot > span::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid var(--bone);
+  animation: look-ping 2.6s var(--ease-out) infinite;
+}
+.look__dot:nth-child(odd) > span::after { animation-delay: 1.3s; }
+@keyframes look-ping {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  70%  { transform: scale(2.6); opacity: 0; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.look__dot { transition: scale 0.35s var(--ease-out); }
+.look__dot:hover,
+.look__dot.is-on { scale: 1.3; }
+.look__dot.is-on > span::after { animation: none; opacity: 0; }
+.look__dot:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+
+/* ---- the line ------------------------------------------------- */
+.look__line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.look__line line {
+  stroke: var(--maroon);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: look-draw 0.55s var(--ease-out) 0.05s forwards;
+}
+.look__line circle {
+  fill: var(--maroon);
+  opacity: 0;
+  animation: look-dot 0.25s var(--ease-out) 0.5s forwards;
+}
+@keyframes look-draw { to { stroke-dashoffset: 0; } }
+@keyframes look-dot  { to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .look__intro, .look__card, .look__arrow, .look__dot { transition: none; }
+  .look__media img, .look__dot > span::after { animation: none; }
+  .look__line line { animation: none; stroke-dashoffset: 0; }
+  .look__line circle { animation: none; opacity: 1; }
+}
+
+/* ---- phone: stage on top, model underneath --------------------
+   The stage sticks under the nav while the (tall) model scrolls past,
+   so the piece you tapped is always in view - tap the boots and the
+   card is still on screen. No line here: it would have to cross her
+   face to reach the card. */
+@media (max-width: 860px) {
+  .look { padding-top: 70px; }
+  /* block, not grid: a sticky child can only travel inside its own
+     grid cell, and the stage has to travel the height of the model */
+  .look__inner { display: block; }
+  .look__stage {
+    position: sticky;
+    top: 62px;
+    z-index: 3;
+    height: auto;
+    max-height: none;
+    min-height: 176px;
+    padding: 14px 0;
+    background: var(--bone);
+  }
+  .look__head { font-size: clamp(34px, 10vw, 46px); margin-bottom: 18px; }
+  .look__note { font-size: 15px; }
+  /* the card lies down: photo left, words right */
+  .look__card { flex-direction: row; align-items: center; gap: 18px; width: 100%; max-width: 360px; }
+  .look__media { flex: 0 0 110px; }
+  .look__meta { padding-top: 0; }
+  .look__arrow { display: none; }
+  .look__figure { height: auto; width: min(84vw, 380px); margin: 12px auto 0; }
+  .look__line { display: none; }
+}

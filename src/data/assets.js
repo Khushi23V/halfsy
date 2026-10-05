@@ -248,3 +248,90 @@ export const STAPLES = [
     href: '/shop/bags-and-accessories/shoulder-bags', src: '/images/bag.avif',
     fit: 'contain', bg: '#F1F1F1' }
 ];
+
+
+/* ---- beat 7: get the look ------------------------------------
+   One styled model, six real listings from the live site. Each piece
+   has a dot on the model; `x` / `y` place it as a percentage of the
+   IMAGE (0,0 = top left), so the dots stay on the garment at any size.
+
+   The image is a transparent cut-out, cropped tight to the figure -
+   if it is replaced, crop the new one tight as well or the dots will
+   drift. It was generated (Gemini) from the six product photos; check
+   every piece still matches its listing before it goes live.
+
+   `img` is the retailer's own product photo (~1000px renditions),
+   `href` the listing. Prices as listed on halfsy.shop, 4 Oct 2026 -
+   the jumper is in pounds because N. Peal sells in GBP.
+   ------------------------------------------------------------ */
+export const LOOK = {
+  image: '/images/look/look-01.png',
+  ratio: '348 / 1051',
+  pieces: [
+    { id: 'sunglasses', x: 50, y: 7,
+      brand: 'Saint Laurent', name: 'SL 706 square sunglasses',
+      now: '$395', was: '$565', retailer: 'Mytheresa',
+      href: 'https://www.mytheresa.com/us/en/women/saint-laurent-sl-706-square-sunglasses-gold-p01043425',
+      img: 'https://img.mytheresa.com/1094/1238/100/jpeg/catalog/product/13/P01043425.jpg' },
+    { id: 'jumper', x: 52, y: 27,
+      brand: 'N. Peal', name: 'Luna roll neck cashmere jumper',
+      now: '£175', was: '£265', retailer: 'N. Peal',
+      href: 'https://www.npeal.com/products/polo-neck-cashmere-sweater-ecru-white',
+      img: 'https://cdn.shopify.com/s/files/1/0498/3262/4292/products/AW21_NPW001867_E34_1.jpg?v=1628171324&width=1000' },
+    { id: 'jacket', x: 16.5, y: 34,
+      brand: 'Elie Saab', name: 'Leather jacket',
+      now: '$2,350', was: '$4,700', retailer: 'Elie Saab',
+      href: 'https://eliesaab.com/products/leather-jacket_brown_j0203nr26l0001',
+      img: 'https://cdn.shopify.com/s/files/1/0605/8872/0370/files/J0203NR26L0001_BROWN_1.jpg?v=1763710910&width=1000' },
+    { id: 'kilt', x: 50, y: 53,
+      brand: 'Burberry', name: 'Check wool mini kilt',
+      now: '$583', was: '$1,495', retailer: 'SSENSE',
+      href: 'https://www.ssense.com/en-us/women/product/burberry/beige-check-wool-mini-kilt-miniskirt/18736501',
+      img: 'https://img.ssensemedia.com/image/upload/b_white,c_lpad,g_south,ar_2:3/f_auto,c_limit,w_1000,q_85/261376F090000_1.jpg' },
+    { id: 'bag', x: 12, y: 60.5,
+      brand: 'Brunello Cucinelli', name: 'Mellow Mini leather bag',
+      now: '$2,240', was: '$3,200', retailer: 'Mytheresa',
+      href: 'https://www.mytheresa.com/us/en/women/brunello-cucinelli-mellow-mini-leather-crossbody-bag-brown-p01131687',
+      img: 'https://img.mytheresa.com/1094/1238/100/jpeg/catalog/product/af/P01131687.jpg' },
+    { id: 'boots', x: 68, y: 85,
+      brand: 'Jimmy Choo', name: 'Maxima snake-effect knee boots',
+      now: '$848', was: '$1,695', retailer: 'Net-a-Porter',
+      href: 'https://www.net-a-porter.com/en-us/shop/product/jimmy-choo/shoes/knee-high/maxima-35-snake-effect-leather-knee-boots/46376663162876819',
+      img: 'https://www.net-a-porter.com/variants/images/46376663162876819/in/w920_q60.jpg' }
+  ]
+};
+
+/* ------------------------------------------------------------
+   The spotlight (beat 8, components/Spot.jsx) - one category in
+   season: a model photograph on the left, four pieces on the right.
+
+   `image` is the photograph (portrait; it is cropped to fill half the
+   screen). `focus` is the point of it that must stay in view when it
+   is cropped - a CSS object-position, x then y. `pieces` is exactly
+   four, in reading order. Prices as listed on halfsy.shop, 4 Oct 2026
+   - the scarf is in pounds because N. Peal sells in GBP.
+   ------------------------------------------------------------ */
+export const SPOT = {
+  title: 'A season in red',
+  image: 'https://cdn.shopify.com/s/files/1/0336/7793/files/250310_DR_CG_HS25_LB_LOOK_41_0025_4c93d02b-e970-412c-9354-5ae4375905b0.jpg?v=1772825307&width=1600',
+  alt: 'Model in a red long-sleeved dress holding a red clutch',
+  focus: '50% 50%',
+  pieces: [
+    { id: 'top', brand: 'Cult Gaia', name: 'Anita halter top',
+      now: '$348', was: '$458', retailer: 'Cult Gaia',
+      href: 'https://cultgaia.com/products/anita-top-ghermez',
+      img: 'https://cdn.shopify.com/s/files/1/0336/7793/files/251110_DR_CULT_GAIA_R26_RESHOOTS_71_CHANTEL_SKIRT_RED_ANITA_TOP_0020_WEBBED.jpg?v=1763347098&width=1000' },
+    { id: 'pumps', brand: 'Santoni', name: 'Suede buckle pumps',
+      now: '$465', was: '$930', retailer: 'Bergdorf Goodman',
+      href: 'https://www.bergdorfgoodman.com/p/santoni-55mm-suede-buckle-mid-heel-pumps-prod197270052',
+      img: 'https://media.bergdorfgoodman.com/f_auto,q_auto,w_1000/01/bg_5433586_100508_m' },
+    { id: 'tote', brand: 'Miu Miu', name: 'Pre-owned leather tote',
+      now: '$1,428', was: '$1,866', retailer: 'Farfetch',
+      href: 'https://www.farfetch.com/shopping/women/miu-miu-pre-owned-2010-2015-leather-tote-bag-item-31020143.aspx',
+      img: 'https://cdn-images.farfetch-contents.com/31/02/01/43/31020143_60109979_1000.jpg' },
+    { id: 'scarf', brand: 'N. Peal', name: 'Cashmere check scarf',
+      now: '£90', was: '£125', retailer: 'N. Peal',
+      href: 'https://www.npeal.com/products/unisex-cashmere-check-scarf-red-grey',
+      img: 'https://cdn.shopify.com/s/files/1/0498/3262/4292/files/SS25_NPA108503_R18_2.jpg?v=1741855886&width=1000' }
+  ]
+};

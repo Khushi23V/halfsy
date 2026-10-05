@@ -11,7 +11,7 @@ export default function Staples() {
       <header className="staples__intro">
         <p className="staples__eyebrow">Fall &rsquo;26 trends</p>
         <h2 className="staples__head">
-          Five to <span className="script">fall</span> for
+          Five to fall for
         </h2>
       </header>
 

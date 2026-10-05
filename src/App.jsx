@@ -17,9 +17,11 @@ import Products from './components/Products.jsx';
 import Brands   from './components/Brands.jsx';
 import Footer   from './components/Footer.jsx';
 
-import { initDrops }    from './beats/drops.js';
+import { initLook }     from './beats/look.js';
 
-import Drops    from './components/Drops.jsx';
+import Look     from './components/Look.jsx';
+import { initSpot }     from './beats/spot.js';
+import Spot     from './components/Spot.jsx';
 import { initReviews }  from './beats/reviews.js';
 import { initStaples }  from './beats/staples.js';
 import Staples  from './components/Staples.jsx';
@@ -57,7 +59,8 @@ export default function App() {
         initProducts(),
         initStaples(),
         initReviews(),
-        initDrops(),
+        initLook(),
+        initSpot(),
         initBrands(),
         initFooter()
       ].filter(Boolean);
@@ -103,7 +106,8 @@ export default function App() {
         <Story />
         <Products />
         <Staples />
-        <Drops />
+        <Look />
+        <Spot />
         <Reviews />
         <Brands />
       </main>

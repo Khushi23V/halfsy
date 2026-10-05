@@ -1,0 +1,173 @@
+/* ============================================================
+   spot.css - beat 8, the spotlight (landing page).
+
+   Left: one model photograph, edge to edge and a full viewport tall.
+   Right: a heading over four pieces, two by two, on the light ground.
+
+   The section is one screen on desktop, so the tiles are sized from
+   the viewport height (--spot-tile) rather than from the column
+   width: on a tall monitor they grow and everything fits under the
+   nav. On a short laptop they stop shrinking at a readable size, the
+   right side runs a little past one screen, and the photograph
+   (sticky) simply waits for it.
+   ============================================================ */
+
+.spot {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  background: var(--bone);
+
+  /* what is left of the screen under the nav after the heading, the
+     two captions and the spacing, split between the two rows */
+  --spot-tile: clamp(172px, calc(40vh - 148px), 400px);
+}
+
+/* ---- the photograph ------------------------------------------- */
+.spot__figure {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;                    /* the entrance scales the photo inside it */
+  background: var(--tile-bg, #F2F1ED);
+}
+.spot__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;                   /* object-position comes from SPOT.focus */
+  user-select: none;
+}
+
+/* ---- heading + pieces ----------------------------------------- */
+.spot__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(52px, 9vh, 104px);        /* heading to the pieces */
+  min-height: 100vh;
+  /* the nav is fixed over the top of the page: centre in what is left */
+  padding: calc(var(--nav-h, 86px) + clamp(20px, 3vh, 40px)) var(--gutter) clamp(28px, 4.5vh, 56px);
+}
+
+.spot__head {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(30px, 3.4vw, 48px);   /* two steps under the other section heads */
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.spot__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  gap: clamp(22px, 3.6vh, 40px) clamp(28px, 5vw, 96px);
+}
+
+.spot__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* as wide as its caption needs; the tile below sets its own width,
+     so a long name never squeezes or wraps under a narrow tile */
+  min-width: calc(var(--spot-tile) * 0.75);
+  color: var(--ink);
+  text-align: center;
+}
+.spot__card:focus-visible { outline: 1px solid var(--ink); outline-offset: 8px; }
+
+.spot__media {
+  position: relative;
+  display: block;
+  width: calc(var(--spot-tile) * 0.75);  /* the tile is 3:4 */
+  height: var(--spot-tile);
+  overflow: hidden;
+  background: var(--tile-bg, #F2F1ED);   /* same ground as the shop cards */
+}
+.spot__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  transition: transform 0.9s var(--ease-out);
+}
+.spot__card:hover .spot__media img,
+.spot__card:focus-visible .spot__media img { transform: scale(1.04); }
+.spot__media.is-broken img { visibility: hidden; }
+
+/* the arrow box, as on the shop cards */
+.spot__arrow {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--bone);
+  transform: translateY(105%);
+  transition: transform 0.5s var(--ease-out);
+}
+.spot__arrow svg { width: 14px; height: 14px; }
+.spot__card:hover .spot__arrow,
+.spot__card:focus-visible .spot__arrow { transform: none; }
+
+.spot__meta { display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 14px; }
+.spot__brand {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.spot__name {
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.spot__price {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-top: 3px;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+.spot__now { font-size: 14px; font-weight: 500; }
+.spot__price s { font-size: 12.5px; color: var(--ink-38); }
+
+@media (prefers-reduced-motion: reduce) {
+  .spot__media img, .spot__arrow { transition: none; }
+}
+
+/* ---- narrow desktop / tablet: two captions still side by side -- */
+@media (max-width: 1100px) {
+  .spot__grid { column-gap: 26px; }
+}
+
+/* ---- phone: photograph, then the heading, then the four -------- */
+@media (max-width: 860px) {
+  .spot { display: block; }
+  .spot__figure { position: relative; height: 78vh; height: 78svh; max-height: 640px; }
+  .spot__body { min-height: 0; padding: 54px var(--gutter) 70px; gap: 52px; }
+  .spot__head { font-size: clamp(28px, 7.8vw, 36px); }
+  .spot__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; width: 100%; }
+  .spot__card { min-width: 0; }
+  .spot__media { width: 100%; height: auto; aspect-ratio: 3 / 4; }
+  .spot__name { white-space: normal; }
+  .spot__arrow { display: none; }
+}

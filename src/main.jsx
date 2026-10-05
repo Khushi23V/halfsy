@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/beats.css';
+import './styles/look.css';
+import './styles/spot.css';
 import './styles/shop.css';
 import './styles/brands.css';
 import './styles/product.css';

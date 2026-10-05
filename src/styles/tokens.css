@@ -9,13 +9,15 @@
      once and is a near-duplicate of the maroon, so it is folded
      into --maroon rather than kept as a sixth token.
      ------------------------------------------------------------ */
-  --maroon:        #5A1A24;
+  --maroon:        #5A1A24;   /* the accent: buttons, arrow boxes, the two
+                                dark story beats. Not text - see --ink */
   /* warmer than --maroon, matched to the footer artwork's own
      field so the panel and the fill below it read as one */
   --footer-bg:     #551722;
   --bone:          #f4f4f4;
   --white:         #FFFFFF;
-  --black:         #000000;   /* only the EXPLORE BRANDS button uses this */
+  --black:         #000000;
+  --ink:           #000000;   /* all text, rules and focus rings */
 
   /* derived — opacity steps of the maroon, for rules and secondary text */
   --maroon-90:     rgba(90, 26, 36, 0.90);
@@ -23,7 +25,15 @@
   --maroon-38:     rgba(90, 26, 36, 0.38);
   --maroon-12:     rgba(90, 26, 36, 0.12);
   --maroon-07:     rgba(90, 26, 36, 0.07);
-  --grid-line:     rgba(90, 26, 36, 0.055);
+  --grid-line:     rgba(0, 0, 0, 0.055);
+
+  /* opacity steps of the ink - secondary text, hairlines */
+  --ink-90:        rgba(0, 0, 0, 0.90);
+  --ink-65:        rgba(0, 0, 0, 0.65);
+  --ink-55:        rgba(0, 0, 0, 0.55);
+  --ink-38:        rgba(0, 0, 0, 0.38);
+  --ink-12:        rgba(0, 0, 0, 0.12);
+  --ink-07:        rgba(0, 0, 0, 0.07);
 
   /* on-maroon text */
   --bone-70:       rgba(239, 233, 230, 0.70);

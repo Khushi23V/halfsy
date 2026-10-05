@@ -10,7 +10,7 @@ export default function Products() {
   <div className="products__layout">
 
     <header className="products__intro">
-      <h2 className="products__head">YOURS FOR LESS</h2>
+      <h2 className="products__head">Yours for less</h2>
       <p className="products__note">Shop without overpaying.</p>
       <a className="btn products__cta" href="/shop">Shop the best deals</a>
     </header>
